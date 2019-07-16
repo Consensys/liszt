@@ -1,4 +1,3 @@
 package net.consensys.liszt.smartcontractmanager;
 
-public class LisztSmartContract {
-}
+public class LisztSmartContract {}

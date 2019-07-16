@@ -1,7 +1,49 @@
+plugins {
+    id "com.diffplug.gradle.spotless" version "3.23.1"
+    id "com.github.johnrengelman.shadow" version "4.0.4"
+}
+
+
 subprojects {
+
     apply plugin: 'java'
 
+
+    apply plugin: 'java'
+    sourceCompatibility = 1.9
+    targetCompatibility = 1.9
+
+    apply plugin: 'maven'
+    apply plugin: 'com.diffplug.gradle.spotless'
+
     repositories {
-        mavenCentral()
+        mavenLocal()
+        maven { url "http://repo.maven.apache.org/maven2" }
+    }
+
+    dependencies {
+        testImplementation 'junit:junit:4.12'
+    }
+
+    spotless {
+        java {
+            removeUnusedImports()
+            googleJavaFormat('1.7')
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+    }
+
+    test {
+        // We need to limit the memory to be on par with CircleCI
+        maxHeapSize = "2500m"
+        afterSuite { desc, result ->
+            if (!desc.parent)
+                println("${result.resultType} " +
+                        "(${result.testCount} tests, " +
+                        "${result.successfulTestCount} successes, " +
+                        "${result.failedTestCount} failures, " +
+                        "${result.skippedTestCount} skipped)")
+        }
     }
 }
