@@ -1,5 +1,7 @@
 package net.consensys.liszt.transactionmanager;
 
+import net.consensys.liszt.core.common.RTransfer;
+
 import java.util.List;
 
 public class BatchServiceImpl implements BatchService {

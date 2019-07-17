@@ -2,6 +2,7 @@ package net.consensys.liszt.transactionmanager;
 
 import java.util.List;
 import net.consensys.liszt.accountmanager.AccountService;
+import net.consensys.liszt.core.common.RTransfer;
 
 public class TransactionServiceImpl implements TransactionService {
 

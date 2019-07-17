@@ -2,8 +2,8 @@ apply plugin: 'application'
 
 dependencies {
     compile 'log4j:log4j:1.2.17'
-    compile project(':transactionmanager')
+    compile project(':core')
+
 }
 
-mainClassName = 'net.consensys.liszt.accountmanager.AccountManager'
 

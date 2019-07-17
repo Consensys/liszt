@@ -1,4 +1,4 @@
-package net.consensys.liszt.transactionmanager;
+package net.consensys.liszt.core.common;
 
 import java.math.BigDecimal;
 import net.consensys.liszt.core.crypto.PublicKey;
