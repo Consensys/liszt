@@ -3,11 +3,11 @@ package net.consensys.liszt.transactionmanager;
 import java.util.List;
 import net.consensys.liszt.accountmanager.AccountService;
 
-public class ServicesImpl implements Services {
+public class TransactionServiceImpl implements TransactionService {
 
   private final AccountService accountService;
 
-  public ServicesImpl(AccountService accountService) {
+  public TransactionServiceImpl(AccountService accountService) {
     this.accountService = accountService;
   }
 

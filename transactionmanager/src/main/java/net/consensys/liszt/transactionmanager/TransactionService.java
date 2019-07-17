@@ -2,7 +2,7 @@ package net.consensys.liszt.transactionmanager;
 
 import java.util.List;
 
-public interface Services {
+public interface TransactionService {
 
   /**
    * Add a transfer to the list of transfer to include, as soon as possible, in the rollup.
