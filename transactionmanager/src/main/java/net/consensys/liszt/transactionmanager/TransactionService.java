@@ -1,8 +1,7 @@
 package net.consensys.liszt.transactionmanager;
 
-import net.consensys.liszt.core.common.RTransfer;
-
 import java.util.List;
+import net.consensys.liszt.core.common.RTransfer;
 
 public interface TransactionService {
 
@@ -24,6 +23,4 @@ public interface TransactionService {
    * @return the list of transfer selected.
    */
   List<RTransfer> selectRTransfersForNextBatch(byte[] fatherRootHash);
-
-
 }

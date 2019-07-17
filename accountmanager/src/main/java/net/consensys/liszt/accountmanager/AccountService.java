@@ -1,8 +1,7 @@
 package net.consensys.liszt.accountmanager;
 
-import net.consensys.liszt.core.common.RTransfer;
-
 import java.util.List;
+import net.consensys.liszt.core.common.RTransfer;
 
 public interface AccountService {
 
