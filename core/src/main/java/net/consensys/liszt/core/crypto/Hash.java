@@ -1,3 +1,3 @@
 package net.consensys.liszt.core.crypto;
 
-public class PublicKey {}
+public class Hash {}

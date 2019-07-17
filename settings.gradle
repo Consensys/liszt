@@ -2,5 +2,7 @@ include 'transactionmanager'
 include 'accountmanager'
 include 'smartcontractmanager'
 include 'server'
+include 'core'
+
 
 

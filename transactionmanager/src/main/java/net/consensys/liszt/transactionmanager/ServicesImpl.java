@@ -1,12 +1,19 @@
 package net.consensys.liszt.transactionmanager;
 
 import java.util.List;
+import net.consensys.liszt.accountmanager.AccountService;
 
 public class ServicesImpl implements Services {
 
+  private final AccountService accountService;
+
+  public ServicesImpl(AccountService accountService) {
+    this.accountService = accountService;
+  }
+
   @Override
   public boolean addTransaction(RTransfer rtx) {
-    return false;
+    return accountService.checkBasicValidity(rtx) && rtx.isSigned();
   }
 
   @Override

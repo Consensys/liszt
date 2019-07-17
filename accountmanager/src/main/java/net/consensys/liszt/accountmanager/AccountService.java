@@ -3,7 +3,7 @@ package net.consensys.liszt.accountmanager;
 import java.util.List;
 import net.consensys.liszt.transactionmanager.RTransfer;
 
-public interface Services {
+public interface AccountService {
 
   /** @return true if the transfer is valid, eg. the account exists. */
   boolean checkBasicValidity(RTransfer transfer);

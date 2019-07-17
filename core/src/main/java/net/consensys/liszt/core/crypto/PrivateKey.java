@@ -1,4 +1,3 @@
 package net.consensys.liszt.core.crypto;
 
-public class PrivateKey {
-}
+public class PrivateKey {}
