@@ -6,10 +6,7 @@ import net.consensys.liszt.core.common.RTransfer;
 public class TransferServiceImpl implements TransferService {
 
   @Override
-  public void addTransfer(RTransfer rtx) {
-
-   
-  }
+  public void addTransfer(RTransfer rtx) {}
 
   @Override
   public RTransferState getRTransferStatus(byte[] transferHas) {

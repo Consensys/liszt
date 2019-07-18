@@ -2,6 +2,7 @@ include 'accountmanager'
 include 'server'
 include 'core'
 include 'transfermanager'
+include 'provemanager'
 
 
 

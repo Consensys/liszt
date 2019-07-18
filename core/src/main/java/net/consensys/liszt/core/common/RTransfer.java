@@ -1,8 +1,6 @@
 package net.consensys.liszt.core.common;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
 
