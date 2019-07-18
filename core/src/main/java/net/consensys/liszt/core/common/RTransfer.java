@@ -1,6 +1,8 @@
 package net.consensys.liszt.core.common;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
 
@@ -12,7 +14,7 @@ public class RTransfer {
   public final int nonce;
   public final PublicKey from;
   public final PublicKey to;
-  public final BigDecimal amount;
+  public final BigInteger amount;
   public final int rIdFrom;
   public final int rIdTo;
   public final Signature sig;
@@ -21,7 +23,7 @@ public class RTransfer {
       int nonce,
       PublicKey from,
       PublicKey to,
-      BigDecimal amount,
+      BigInteger amount,
       int rIdFrom,
       int rIdTo,
       Signature sig) {

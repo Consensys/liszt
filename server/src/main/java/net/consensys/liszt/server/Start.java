@@ -4,6 +4,8 @@ import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
 
+import java.math.BigInteger;
+
 public class Start {
 
   public static void main(String[] args) {
@@ -13,6 +15,6 @@ public class Start {
   }
 
   static RTransfer createTransfer() {
-    return new RTransfer(0, new PublicKey(), new PublicKey(), null, 0, 0, new Signature());
+    return new RTransfer(0, new PublicKey(), new PublicKey(), BigInteger.valueOf(100), 0, 0, new Signature());
   }
 }
