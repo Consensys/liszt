@@ -30,15 +30,14 @@ public class ControllerImp implements Controller {
 
   @Override
   public boolean addTransfer(RTransfer rtx) {
-    if (accountService.checkBasicValidity(rtx)) {
-      transferService.addTransfer(rtx);
-      List<RTransfer> transfers = transferService.selectRTransfersForNextBatch(lastRootHash);
-      if (!transfers.isEmpty()) {
-        handleNewBatch(transfers);
-      }
-      return true;
+    if (!accountService.checkBasicValidity(rtx)) return false;
+
+    transferService.addTransfer(rtx);
+    List<RTransfer> transfers = transferService.selectRTransfersForNextBatch(lastRootHash);
+    if (!transfers.isEmpty()) {
+      handleNewBatch(transfers);
     }
-    return false;
+    return true;
   }
 
   @Override
