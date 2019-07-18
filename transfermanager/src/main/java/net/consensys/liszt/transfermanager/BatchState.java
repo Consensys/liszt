@@ -1,4 +1,4 @@
-package net.consensys.liszt.transactionmanager;
+package net.consensys.liszt.transfermanager;
 
 import java.util.Date;
 

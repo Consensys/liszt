@@ -1,9 +1,9 @@
-package net.consensys.liszt.transactionmanager;
+package net.consensys.liszt.transfermanager;
 
 import java.util.List;
 import net.consensys.liszt.core.common.RTransfer;
 
-public interface TransactionService {
+public interface TransferService {
 
   /**
    * Add a transfer to the list of transfer to include, as soon as possible, in the rollup.
@@ -11,7 +11,7 @@ public interface TransactionService {
    * @param rtx - the transfer
    * @return true if the transfer can be included, false otherwise.
    */
-  boolean addTransaction(RTransfer rtx);
+  boolean addTransfer(RTransfer rtx);
 
   /** @return the state of the transfer. */
   RTransferState getRTransferStatus(byte[] transferHas);

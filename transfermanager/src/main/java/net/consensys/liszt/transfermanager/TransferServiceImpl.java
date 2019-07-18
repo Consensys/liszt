@@ -1,12 +1,12 @@
-package net.consensys.liszt.transactionmanager;
+package net.consensys.liszt.transfermanager;
 
 import java.util.List;
 import net.consensys.liszt.core.common.RTransfer;
 
-public class TransactionServiceImpl implements TransactionService {
+public class TransferServiceImpl implements TransferService {
 
   @Override
-  public boolean addTransaction(RTransfer rtx) {
+  public boolean addTransfer(RTransfer rtx) {
     return rtx.isSigned();
   }
 
