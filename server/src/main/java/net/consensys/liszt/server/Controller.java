@@ -1,6 +1,7 @@
 package net.consensys.liszt.server;
 
 import net.consensys.liszt.core.common.RTransfer;
+import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.transfermanager.RTransferState;
 
 public interface Controller {
@@ -17,5 +18,5 @@ public interface Controller {
   RTransferState getRTransferStatus(byte[] transferHas);
 
   /** */
-  void onNewProof();
+  void onNewProof(Proof proof);
 }

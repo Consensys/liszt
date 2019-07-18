@@ -1,6 +1,6 @@
 package net.consensys.liszt.transfermanager;
 
-import java.util.List;
+import java.util.*;
 import net.consensys.liszt.core.common.RTransfer;
 
 public class TransferServiceImpl implements TransferService {
@@ -15,6 +15,6 @@ public class TransferServiceImpl implements TransferService {
 
   @Override
   public List<RTransfer> selectRTransfersForNextBatch(byte[] fatherRootHash) {
-    return null;
+    return new ArrayList<>();
   }
 }

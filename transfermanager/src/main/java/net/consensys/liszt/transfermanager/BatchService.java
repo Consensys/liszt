@@ -1,6 +1,7 @@
 package net.consensys.liszt.transfermanager;
 
 import java.util.List;
+import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 
 public interface BatchService {

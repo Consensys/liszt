@@ -3,6 +3,8 @@ package net.consensys.liszt.server;
 import java.math.BigInteger;
 import net.consensys.liszt.accountmanager.AccountService;
 import net.consensys.liszt.accountmanager.AccountServiceImp;
+import net.consensys.liszt.blockchainmanager.BlockchainService;
+import net.consensys.liszt.blockchainmanager.BlockchainServiceImp;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
@@ -20,8 +22,11 @@ public class Start {
     AccountService accountService = new AccountServiceImp();
     BatchService batchService = new BatchServiceImpl();
     ProveService proveService = new ProveServiceImp();
+    BlockchainService blockchainService = new BlockchainServiceImp();
     Controller controller =
-        new ControllerImp(transferService, accountService, batchService, proveService);
+        new ControllerImp(
+            transferService, accountService, batchService, proveService, blockchainService);
+
     RTransfer rtTransfer = createTransfer();
     controller.addTransfer(rtTransfer);
   }

@@ -1,7 +1,6 @@
-package net.consensys.liszt.transfermanager;
+package net.consensys.liszt.core.common;
 
 import java.util.List;
-import net.consensys.liszt.core.common.RTransfer;
 
 public class Batch {
   public final byte[] fatherRootHash;

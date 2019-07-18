@@ -18,4 +18,5 @@ dependencies {
     compile project(':transfermanager')
     compile project(':accountmanager')
     compile project(':provemanager')
+    compile project(':blockchainmanager')
 }

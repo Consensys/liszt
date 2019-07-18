@@ -3,6 +3,8 @@ include 'server'
 include 'core'
 include 'transfermanager'
 include 'provemanager'
+include 'blockchainmanager'
+
 
 
 
