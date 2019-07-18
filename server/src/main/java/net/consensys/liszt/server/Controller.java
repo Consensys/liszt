@@ -3,6 +3,7 @@ package net.consensys.liszt.server;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.transfermanager.RTransferState;
 
+
 public interface Controller {
 
   /**
@@ -15,4 +16,9 @@ public interface Controller {
 
   /** @return the state of the transfer. */
   RTransferState getRTransferStatus(byte[] transferHas);
+
+  /**
+   *
+   */
+  void onNewProof();
 }
