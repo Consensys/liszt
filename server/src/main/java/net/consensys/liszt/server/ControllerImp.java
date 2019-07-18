@@ -33,7 +33,7 @@ public class ControllerImp implements Controller {
     if (!accountService.checkBasicValidity(rtx)) return false;
 
     transferService.addTransfer(rtx);
-    List<RTransfer> transfers = transferService.selectRTransfersForNextBatch(lastRootHash);
+    List<RTransfer> transfers = transferService.selectRTransfersForNextBatch(this.lastRootHash);
     if (!transfers.isEmpty()) {
       handleNewBatch(transfers);
     }
@@ -49,10 +49,11 @@ public class ControllerImp implements Controller {
   }
 
   private void handleNewBatch(List<RTransfer> transfers) {
-    byte[] newRootHash = accountService.update(transfers, lastRootHash);
-    batchService.startNewBatch(lastRootHash);
+    byte[] newRootHash = accountService.update(transfers, this.lastRootHash);
+    batchService.startNewBatch(this.lastRootHash);
     batchService.addToBatch(transfers, newRootHash);
     Batch batch = batchService.getBatchToProve();
     proveService.proveBatch(batch);
+    this.lastRootHash = newRootHash;
   }
 }
