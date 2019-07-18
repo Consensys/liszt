@@ -41,4 +41,17 @@ public interface BatchService {
    * @return Batch
    */
   Batch getBatch(byte[] rootHash);
+
+  /**
+   * @param hash
+   * @return List of batch states corresponding to a given transfer hash
+   */
+  List<BatchState> getBatchesForTransfer(byte[] hash);
+
+  /**
+   * Updates status corresponding to the given batch
+   *
+   * @param batch, blockHight, blockHash
+   */
+  void updateBatchStatus(Batch batch, int blockHight, byte[] blockHash);
 }

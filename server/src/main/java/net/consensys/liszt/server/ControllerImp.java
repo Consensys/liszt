@@ -8,6 +8,7 @@ import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.provemanager.ProveService;
 import net.consensys.liszt.transfermanager.BatchService;
+import net.consensys.liszt.transfermanager.BatchState;
 import net.consensys.liszt.transfermanager.RTransferState;
 import net.consensys.liszt.transfermanager.TransferService;
 
@@ -59,8 +60,20 @@ public class ControllerImp implements Controller {
   }
 
   @Override
-  public RTransferState getRTransferStatus(byte[] transferHas) {
-    return null;
+  public void onChainReorg(byte[] rootHash) {
+    this.lastRootHash = rootHash;
+  }
+
+  @Override
+  public void onBatchIncluded(Batch batch, int blockHight, byte[] blockHash) {
+    batchService.updateBatchStatus(batch, blockHight, blockHash);
+  }
+
+  @Override
+  public RTransferState getRTransferStatus(byte[] transferHash) {
+    List<BatchState> batchStates = batchService.getBatchesForTransfer(transferHash);
+    RTransferState rTransferState = new RTransferState(transferHash, batchStates);
+    return rTransferState;
   }
 
   private void handleNewBatch(List<RTransfer> transfers) {

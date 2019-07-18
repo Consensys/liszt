@@ -31,4 +31,12 @@ public class BatchServiceImpl implements BatchService {
   public Batch getBatch(byte[] rootHash) {
     return null;
   }
+
+  @Override
+  public List<BatchState> getBatchesForTransfer(byte[] hash) {
+    return null;
+  }
+
+  @Override
+  public void updateBatchStatus(Batch batch, int blockHight, byte[] blockHash) {}
 }
