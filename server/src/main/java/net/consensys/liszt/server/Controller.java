@@ -2,6 +2,7 @@ package net.consensys.liszt.server;
 
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
+import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.transfermanager.RTransferState;
 
@@ -16,7 +17,7 @@ public interface Controller {
   boolean addTransfer(RTransfer rtx);
 
   /** @return the state of the transfer. */
-  RTransferState getRTransferStatus(byte[] transferHas);
+  RTransferState getRTransferStatus(Hash transferHash);
 
   /**
    * Callback invoked on every new proof generated
@@ -30,12 +31,12 @@ public interface Controller {
    *
    * @param rootHash rootHash of the new rollup
    */
-  void onChainReorg(byte[] rootHash);
+  void onChainReorg(Hash rootHash);
 
   /**
    * Callback invoked when batch and corresponding proof are included in a block
    *
    * @param batch, blockHight, blockHash
    */
-  void onBatchIncluded(Batch batch, int blockHight, byte[] blockHash);
+  void onBatchIncluded(Batch batch, int blockHight, Hash blockHash);
 }

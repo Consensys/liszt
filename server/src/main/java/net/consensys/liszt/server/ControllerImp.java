@@ -5,6 +5,7 @@ import net.consensys.liszt.accountmanager.AccountService;
 import net.consensys.liszt.blockchainmanager.*;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
+import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.provermanager.ProverService;
 import net.consensys.liszt.transfermanager.BatchService;
@@ -20,7 +21,7 @@ public class ControllerImp implements Controller {
   private final ProverService proveService;
   private final BlockchainService blockchainService;
 
-  private byte[] lastRootHash;
+  private Hash lastRootHash;
 
   public ControllerImp(
       TransferService transferService,
@@ -57,24 +58,24 @@ public class ControllerImp implements Controller {
   }
 
   @Override
-  public void onChainReorg(byte[] rootHash) {
+  public void onChainReorg(Hash rootHash) {
     this.lastRootHash = rootHash;
   }
 
   @Override
-  public void onBatchIncluded(Batch batch, int blockHight, byte[] blockHash) {
+  public void onBatchIncluded(Batch batch, int blockHight, Hash blockHash) {
     batchService.updateBatchStatus(batch, blockHight, blockHash);
   }
 
   @Override
-  public RTransferState getRTransferStatus(byte[] transferHash) {
+  public RTransferState getRTransferStatus(Hash transferHash) {
     List<BatchState> batchStates = batchService.getBatchesForTransfer(transferHash);
     RTransferState rTransferState = new RTransferState(transferHash, batchStates);
     return rTransferState;
   }
 
   private void handleNewBatch(List<RTransfer> transfers) {
-    byte[] newRootHash = accountService.update(transfers, this.lastRootHash);
+    Hash newRootHash = accountService.update(transfers, this.lastRootHash);
     batchService.startNewBatch(this.lastRootHash);
     batchService.addToBatch(transfers, newRootHash);
     Batch batch = batchService.getBatchToProve();

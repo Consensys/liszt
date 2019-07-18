@@ -2,6 +2,7 @@ package net.consensys.liszt.transfermanager;
 
 import java.util.List;
 import net.consensys.liszt.core.common.RTransfer;
+import net.consensys.liszt.core.crypto.Hash;
 
 public interface TransferService {
 
@@ -13,7 +14,7 @@ public interface TransferService {
   void addTransfer(RTransfer rtx);
 
   /** @return the state of the transfer. */
-  RTransferState getRTransferStatus(byte[] transferHas);
+  RTransferState getRTransferStatus(Hash transferHash);
 
   /**
    * Select the transfer for the next batch.
@@ -21,5 +22,5 @@ public interface TransferService {
    * @param fatherRootHash - the starting point
    * @return the list of transfer selected.
    */
-  List<RTransfer> selectRTransfersForNextBatch(byte[] fatherRootHash);
+  List<RTransfer> selectRTransfersForNextBatch(Hash fatherRootHash);
 }

@@ -2,6 +2,7 @@ package net.consensys.liszt.blockchainmanager;
 
 import java.util.List;
 import net.consensys.liszt.core.common.Batch;
+import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
 
 public class BlockchainServiceImp implements BlockchainService {
@@ -10,7 +11,7 @@ public class BlockchainServiceImp implements BlockchainService {
   public void submit(Batch batch, Proof proof) {}
 
   @Override
-  public byte[] checkInclusion(byte[] rootHash) {
+  public byte[] checkInclusion(Hash rootHash) {
     return new byte[0];
   }
 
@@ -20,7 +21,7 @@ public class BlockchainServiceImp implements BlockchainService {
   }
 
   @Override
-  public int getLockedDone(int rollupId, byte[] txHash) {
+  public int getLockedDone(int rollupId, Hash txHash) {
     return 0;
   }
 }

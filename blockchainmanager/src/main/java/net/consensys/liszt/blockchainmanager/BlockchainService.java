@@ -2,6 +2,7 @@ package net.consensys.liszt.blockchainmanager;
 
 import java.util.List;
 import net.consensys.liszt.core.common.Batch;
+import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
 
 public interface BlockchainService {
@@ -17,7 +18,7 @@ public interface BlockchainService {
    *
    * @return the hash of the block where the transaction was included, if any
    */
-  byte[] checkInclusion(byte[] rootHash);
+  byte[] checkInclusion(Hash rootHash);
 
   /**
    * Get the list of cross rollup transfers with this rollup id as the destination that are in
@@ -31,5 +32,5 @@ public interface BlockchainService {
    *
    * @return the timeout (a block height) if the locked in done, 0 otherwise
    */
-  int getLockedDone(int rollupId, byte[] txHash);
+  int getLockedDone(int rollupId, Hash txHash);
 }
