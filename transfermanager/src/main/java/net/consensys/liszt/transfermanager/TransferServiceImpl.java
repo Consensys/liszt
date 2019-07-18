@@ -6,8 +6,9 @@ import net.consensys.liszt.core.common.RTransfer;
 public class TransferServiceImpl implements TransferService {
 
   @Override
-  public boolean addTransfer(RTransfer rtx) {
-    return rtx.isSigned();
+  public void addTransfer(RTransfer rtx) {
+
+   
   }
 
   @Override

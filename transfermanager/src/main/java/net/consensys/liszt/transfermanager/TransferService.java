@@ -9,9 +9,8 @@ public interface TransferService {
    * Add a transfer to the list of transfer to include, as soon as possible, in the rollup.
    *
    * @param rtx - the transfer
-   * @return true if the transfer can be included, false otherwise.
    */
-  boolean addTransfer(RTransfer rtx);
+  void addTransfer(RTransfer rtx);
 
   /** @return the state of the transfer. */
   RTransferState getRTransferStatus(byte[] transferHas);

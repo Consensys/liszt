@@ -7,7 +7,7 @@ import java.util.List;
 public class AccountServiceImp implements AccountService {
     @Override
     public boolean checkBasicValidity(RTransfer transfer) {
-        return false;
+        return transfer.isSigned();
     }
 
     @Override
