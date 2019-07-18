@@ -23,6 +23,7 @@ public class Start {
     BatchService batchService = new BatchServiceImpl();
     ProveService proveService = new ProveServiceImp();
     BlockchainService blockchainService = new BlockchainServiceImp();
+
     Controller controller =
         new ControllerImp(
             transferService, accountService, batchService, proveService, blockchainService);

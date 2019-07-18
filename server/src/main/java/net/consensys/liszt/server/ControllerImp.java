@@ -39,7 +39,6 @@ public class ControllerImp implements Controller {
   public boolean addTransfer(RTransfer rtx) {
 
     if (!accountService.checkBasicValidity(rtx)) {
-      // TODO update transfers status
       return false;
     }
 
@@ -48,13 +47,11 @@ public class ControllerImp implements Controller {
     if (!transfers.isEmpty()) {
       handleNewBatch(transfers);
     }
-    // TODO update transfers status
     return true;
   }
 
   @Override
   public void onNewProof(Proof proof) {
-    // TODO update transfers status
     Batch batch = batchService.getBatch(proof.rootHash);
     blockchainService.submit(batch, proof);
   }
