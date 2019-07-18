@@ -1,7 +1,10 @@
 .gradle
 .idea
+gradlew
+gradlew.bat
 out
 build
+
 accountmanager/build/
-smartcontractmanager/build/
+blockchainmanager/build/
 transactionmanager/build/
