@@ -8,8 +8,8 @@ import net.consensys.liszt.blockchainmanager.BlockchainServiceImp;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
-import net.consensys.liszt.provemanager.ProveService;
-import net.consensys.liszt.provemanager.ProveServiceImp;
+import net.consensys.liszt.provermanager.ProverService;
+import net.consensys.liszt.provermanager.ProverServiceImp;
 import net.consensys.liszt.transfermanager.BatchService;
 import net.consensys.liszt.transfermanager.BatchServiceImpl;
 import net.consensys.liszt.transfermanager.TransferService;
@@ -21,7 +21,7 @@ public class Start {
     TransferService transferService = new TransferServiceImpl();
     AccountService accountService = new AccountServiceImp();
     BatchService batchService = new BatchServiceImpl();
-    ProveService proveService = new ProveServiceImp();
+    ProverService proveService = new ProverServiceImp();
     BlockchainService blockchainService = new BlockchainServiceImp();
 
     Controller controller =

@@ -1,8 +1,8 @@
-package net.consensys.liszt.provemanager;
+package net.consensys.liszt.provermanager;
 
 import net.consensys.liszt.core.common.Batch;
 
-public class ProveServiceImp implements ProveService {
+public class ProverServiceImp implements ProverService {
   @Override
   public void proveBatch(Batch batch) {}
 }

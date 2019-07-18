@@ -6,7 +6,7 @@ import net.consensys.liszt.blockchainmanager.*;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Proof;
-import net.consensys.liszt.provemanager.ProveService;
+import net.consensys.liszt.provermanager.ProverService;
 import net.consensys.liszt.transfermanager.BatchService;
 import net.consensys.liszt.transfermanager.BatchState;
 import net.consensys.liszt.transfermanager.RTransferState;
@@ -17,7 +17,7 @@ public class ControllerImp implements Controller {
   private final TransferService transferService;
   private final AccountService accountService;
   private final BatchService batchService;
-  private final ProveService proveService;
+  private final ProverService proveService;
   private final BlockchainService blockchainService;
 
   private byte[] lastRootHash;
@@ -26,7 +26,7 @@ public class ControllerImp implements Controller {
       TransferService transferService,
       AccountService accountService,
       BatchService batchService,
-      ProveService proveService,
+      ProverService proveService,
       BlockchainService blockchainService) {
     this.transferService = transferService;
     this.accountService = accountService;
