@@ -54,7 +54,8 @@ public class ControllerImp implements Controller {
   @Override
   public void onNewProof(Proof proof) {
     // TODO update transfers status
-
+    Batch batch = batchService.getBatch(proof.rootHash);
+    blockchainService.submit(batch, proof);
   }
 
   @Override

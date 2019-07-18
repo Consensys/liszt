@@ -35,4 +35,10 @@ public interface BatchService {
    * generated already.
    */
   byte[] generateTransaction(byte[] roothash);
+
+  /**
+   * @param rootHash, account balance root hash corresponding to the given batch
+   * @return Batch
+   */
+  Batch getBatch(byte[] rootHash);
 }

@@ -17,6 +17,10 @@ public interface Controller {
   /** @return the state of the transfer. */
   RTransferState getRTransferStatus(byte[] transferHas);
 
-  /** */
+  /**
+   * Callback invoked on every new proof generated
+   *
+   * @param proof
+   */
   void onNewProof(Proof proof);
 }

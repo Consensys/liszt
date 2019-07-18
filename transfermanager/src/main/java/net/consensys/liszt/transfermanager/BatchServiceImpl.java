@@ -26,4 +26,9 @@ public class BatchServiceImpl implements BatchService {
   public byte[] generateTransaction(byte[] roothash) {
     return new byte[0];
   }
+
+  @Override
+  public Batch getBatch(byte[] rootHash) {
+    return null;
+  }
 }
