@@ -34,20 +34,32 @@ public class ControllerImp implements Controller {
     this.batchService = batchService;
     this.proveService = proveService;
     this.blockchainService = blockchainService;
+    lastRootHash = new Hash();
   }
 
   @Override
   public boolean addTransfer(RTransfer rtx) {
-
-    if (!accountService.checkBasicValidity(rtx)) {
+    if (!accountService.checkBasicValidity(rtx, this.lastRootHash)) {
       return false;
     }
 
     transferService.addTransfer(rtx);
-    List<RTransfer> transfers = transferService.selectRTransfersForNextBatch(this.lastRootHash);
-    if (!transfers.isEmpty()) {
-      handleNewBatch(transfers);
-    }
+
+    List<RTransfer> transfers;
+    List<RTransfer> invalidTransfers;
+    do {
+      transfers = transferService.selectRTransfersForNextBatch(this.lastRootHash);
+      if (!transfers.isEmpty()) {
+        break;
+      }
+      invalidTransfers = accountService.updateIfAllTransfersValid(transfers, this.lastRootHash);
+    } while (!transfers.isEmpty() && invalidTransfers.isEmpty());
+
+    batchService.startNewBatch(this.lastRootHash);
+    lastRootHash = accountService.getLastAcceptedRootHash();
+    batchService.addToBatch(transfers, lastRootHash);
+    Batch batch = batchService.getBatchToProve();
+    proveService.proveBatch(batch);
     return true;
   }
 
@@ -72,15 +84,5 @@ public class ControllerImp implements Controller {
     List<BatchState> batchStates = batchService.getBatchesForTransfer(transferHash);
     RTransferState rTransferState = new RTransferState(transferHash, batchStates);
     return rTransferState;
-  }
-
-  private void handleNewBatch(List<RTransfer> transfers) {
-    Hash newRootHash = accountService.update(transfers, this.lastRootHash);
-    batchService.startNewBatch(this.lastRootHash);
-    batchService.addToBatch(transfers, newRootHash);
-    Batch batch = batchService.getBatchToProve();
-    proveService.proveBatch(batch);
-    this.lastRootHash = newRootHash;
-    // TODO update transfers status
   }
 }
