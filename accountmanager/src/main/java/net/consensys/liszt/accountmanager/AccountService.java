@@ -8,7 +8,7 @@ import net.consensys.liszt.core.crypto.PublicKey;
 public interface AccountService {
 
   /** @return true if the transfer is valid, eg. the account exists. */
-  boolean checkBasicValidity(RTransfer transfer);
+  boolean checkBasicValidity(RTransfer transfer, Hash fatherRootHash);
 
   /**
    * Update the state is all submitted transfer are valid, otherwise return list of invalid

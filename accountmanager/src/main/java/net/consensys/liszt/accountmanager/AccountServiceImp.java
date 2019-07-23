@@ -14,13 +14,17 @@ public class AccountServiceImp implements AccountService {
   private final HashMap<Hash, LinkedHashMap<PublicKey, Account>> accountState;
   private Hash lastAcceptedRootHash;
 
-  public AccountServiceImp(HashMap<Hash, LinkedHashMap<PublicKey, Account>> accountState) {
+  public AccountServiceImp(
+      HashMap<Hash, LinkedHashMap<PublicKey, Account>> accountState, Hash initialRootHash) {
     this.accountState = accountState;
+    this.lastAcceptedRootHash = initialRootHash;
   }
 
   @Override
-  public boolean checkBasicValidity(RTransfer transfer) {
-    return transfer.isSigned();
+  public boolean checkBasicValidity(RTransfer transfer, Hash fatherRootHash) {
+    return transfer.isSigned()
+        && accountState.get(fatherRootHash).get(transfer.to) != null
+        && accountState.get(fatherRootHash).get(transfer.from) != null;
   }
 
   @Override
