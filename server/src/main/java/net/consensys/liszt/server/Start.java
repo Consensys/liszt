@@ -19,7 +19,7 @@ public class Start {
 
   public static void main(String[] args) {
     TransferService transferService = new TransferServiceImpl();
-    AccountService accountService = new AccountServiceImp();
+    AccountService accountService = new AccountServiceImp(null);
     BatchService batchService = new BatchServiceImpl();
     ProverService proveService = new ProverServiceImp();
     BlockchainService blockchainService = new BlockchainServiceImp();
@@ -29,11 +29,17 @@ public class Start {
             transferService, accountService, batchService, proveService, blockchainService);
 
     RTransfer rtTransfer = createTransfer();
-    controller.addTransfer(rtTransfer);
+    //  controller.addTransfer(rtTransfer);
   }
 
   static RTransfer createTransfer() {
     return new RTransfer(
-        0, new PublicKey(), new PublicKey(), BigInteger.valueOf(100), 0, 0, new Signature());
+        0,
+        new PublicKey("Alice"),
+        new PublicKey("Bob"),
+        BigInteger.valueOf(100),
+        0,
+        0,
+        new Signature());
   }
 }
