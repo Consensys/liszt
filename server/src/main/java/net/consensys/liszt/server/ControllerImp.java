@@ -39,7 +39,7 @@ public class ControllerImp implements Controller {
 
   @Override
   public boolean addTransfer(RTransfer rtx) {
-    if (!accountService.checkBasicValidity(rtx)) {
+    if (!accountService.checkBasicValidity(rtx, this.lastRootHash)) {
       return false;
     }
 

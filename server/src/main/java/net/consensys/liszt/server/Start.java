@@ -19,7 +19,7 @@ public class Start {
 
   public static void main(String[] args) {
     TransferService transferService = new TransferServiceImpl();
-    AccountService accountService = new AccountServiceImp(null);
+    AccountService accountService = new AccountServiceImp(null, null);
     BatchService batchService = new BatchServiceImpl();
     ProverService proveService = new ProverServiceImp();
     BlockchainService blockchainService = new BlockchainServiceImp();
