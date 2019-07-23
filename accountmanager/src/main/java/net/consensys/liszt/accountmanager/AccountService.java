@@ -16,7 +16,9 @@ public interface AccountService {
    */
   List<RTransfer> updateIfAllTransfersValid(List<RTransfer> transfers, Hash fatherRootHash);
 
+  /** @return last accepted merkle root hash of the account tree */
   Hash getLastAcceptedRootHash();
 
+  /** @return account for a given user */
   Account getAccount(PublicKey owner, Hash rootHash);
 }
