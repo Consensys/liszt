@@ -1,10 +1,7 @@
 package net.consensys.liszt.accountmanager;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.PublicKey;
@@ -22,6 +19,11 @@ public class AccountServiceImp implements AccountService {
 
   @Override
   public boolean checkBasicValidity(RTransfer transfer, Hash fatherRootHash) {
+    // For inner rollup transfers, transfer is valid if:
+    // 1) Signature valid
+    // 2) "from", and "to" accounts exist is in the rolluo.
+    // TODO conditions for cross rollup transfer
+
     return transfer.isSigned()
         && accountState.get(fatherRootHash).get(transfer.to) != null
         && accountState.get(fatherRootHash).get(transfer.from) != null;
@@ -45,7 +47,7 @@ public class AccountServiceImp implements AccountService {
     }
 
     if (notAcceptedTransfers.isEmpty()) {
-      Hash newRootHash = calculateNewRootHash(tmpAccounts);
+      Hash newRootHash = Accounts.calculateNewRootHash(tmpAccounts);
       accountState.put(newRootHash, tmpAccounts);
       lastAcceptedRootHash = newRootHash;
     }
@@ -71,9 +73,8 @@ public class AccountServiceImp implements AccountService {
     }
     Account toAcc = tmpAccounts.get(transfer.to);
     BigInteger newToAccBalance = toAcc.amount.add(transfer.amount);
-    Account newFromAcc =
-        new Account(fromAcc.publicKey, fromAcc.id, newFromAccBalance, fromAcc.nonce);
-    Account newToAcc = new Account(toAcc.publicKey, toAcc.id, newToAccBalance, toAcc.nonce);
+    Account newFromAcc = Accounts.updateAccount(fromAcc, newFromAccBalance);
+    Account newToAcc = Accounts.updateAccount(toAcc, newToAccBalance);
     tmpAccounts.put(newFromAcc.publicKey, newFromAcc);
     tmpAccounts.put(newToAcc.publicKey, newToAcc);
     return true;
@@ -82,9 +83,5 @@ public class AccountServiceImp implements AccountService {
   private boolean crossRollupTransfer(
       RTransfer transfer, LinkedHashMap<PublicKey, Account> tmpAccounts) {
     return true;
-  }
-
-  private Hash calculateNewRootHash(LinkedHashMap<PublicKey, Account> tmpAccounts) {
-    return new Hash();
   }
 }

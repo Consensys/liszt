@@ -25,14 +25,14 @@ public class AccountServiceTest {
   public void setUp() {
     LinkedHashMap<PublicKey, Account> accounts = accounts();
     HashMap<Hash, LinkedHashMap<PublicKey, Account>> accountState = new HashMap<>();
-    MerkleTree mt = new MerkleTree(accounts);
-    initialRootHash = new Hash(); // mt.getRootHash();
+    initialRootHash = Accounts.calculateNewRootHash(accounts);
     accountState.put(initialRootHash, accounts);
     accountService = new AccountServiceImp(accountState, initialRootHash);
   }
 
   @Test
   public void innerRollupTransfer() {
+
     List<RTransfer> transfers = innerRollupTransfers();
     List<RTransfer> invalidTransfers =
         accountService.updateIfAllTransfersValid(transfers, initialRootHash);
@@ -44,15 +44,16 @@ public class AccountServiceTest {
     assertEquals(aliceAmount, BigInteger.valueOf(90));
     assertEquals(bobAmount, BigInteger.valueOf(110));
 
+    // Test rollback
     BigInteger initialAliceAmount = accountService.getAccount(alice, initialRootHash).amount;
     BigInteger initialBobAmount = accountService.getAccount(bob, initialRootHash).amount;
-    // TODO
-    // assertEquals(initialAliceAmount, BigInteger.valueOf(100));
-    // assertEquals(initialBobAmount, BigInteger.valueOf(100));
+
+    assertEquals(initialAliceAmount, BigInteger.valueOf(100));
+    assertEquals(initialBobAmount, BigInteger.valueOf(100));
   }
 
   @Test
-  public void invalidBalanceInnerRollupTransferTest() {
+  public void invalidBalanceInnerRollupTransfer() {
     List<RTransfer> transfers = invalidBalanceInnerRollupTransfers();
     List<RTransfer> invalidTransfers =
         accountService.updateIfAllTransfersValid(transfers, initialRootHash);
@@ -103,8 +104,8 @@ public class AccountServiceTest {
   }
 
   private static LinkedHashMap<PublicKey, Account> accounts() {
-    Account aliceAccount = new Account(alice, 0, BigInteger.valueOf(100), 0);
-    Account bobAccount = new Account(bob, 0, BigInteger.valueOf(100), 0);
+    Account aliceAccount = Accounts.createAccount(alice, 0, BigInteger.valueOf(100), 0);
+    Account bobAccount = Accounts.createAccount(bob, 0, BigInteger.valueOf(100), 0);
     LinkedHashMap<PublicKey, Account> accounts = new LinkedHashMap<>();
     accounts.put(alice, aliceAccount);
     accounts.put(bob, bobAccount);

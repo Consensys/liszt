@@ -34,7 +34,7 @@ public class ControllerImp implements Controller {
     this.batchService = batchService;
     this.proveService = proveService;
     this.blockchainService = blockchainService;
-    lastRootHash = new Hash();
+    lastRootHash = null; // new Hash();
   }
 
   @Override
