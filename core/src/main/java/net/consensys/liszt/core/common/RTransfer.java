@@ -5,7 +5,7 @@ import java.util.Objects;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
 
-/** Represents a transfer transaction for a rollup, as seen by a user. for bytes (do as Pantheon) */
+/** Represents a transfer transaction for a rollup, as seen by a user */
 public class RTransfer {
   public final int nonce;
   public final PublicKey from;
