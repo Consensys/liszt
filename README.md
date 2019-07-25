@@ -13,7 +13,7 @@ Liszt is a version of zk-rollup (layer 2 scaling sloution for ethereum) which wi
 - ```git clone https://github.com/ConsenSys/liszt```
 - ```gradle test```
 
-https://hackmd.io/gmZ_SkryRDOF7JeG6_rpTw?view
+More information can be found here: https://hackmd.io/gmZ_SkryRDOF7JeG6_rpTw?view
 
 ### Architecture:
 <img width="760" alt="Screenshot 2019-07-25 at 13 16 49" src="https://user-images.githubusercontent.com/7760067/61870546-a96d5c00-aede-11e9-8858-6db6590187ef.png">
