@@ -18,7 +18,7 @@ import net.consensys.liszt.transfermanager.TransferServiceImpl;
 public class Start {
 
   public static void main(String[] args) {
-    TransferService transferService = new TransferServiceImpl();
+    TransferService transferService = new TransferServiceImpl(10);
     AccountService accountService = new AccountServiceImp(null, null);
     BatchService batchService = new BatchServiceImpl();
     ProverService proveService = new ProverServiceImp();
