@@ -8,7 +8,7 @@ Liszt is a version of zk-rollup (layer 2 scaling sloution for ethereum) which wi
  
 **In ETH 2**: 
  - Cross shard transfers 
- - Delegated executions paying for transactions on shard X with funds locked in the rollup in shard Y.
+ - Delegated executions, paying for transactions on shard X with funds locked in the rollup in shard Y.
 
 **Build:** gradle build
 
