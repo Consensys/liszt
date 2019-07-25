@@ -1,5 +1,6 @@
 package net.consensys.liszt.server;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.consensys.liszt.accountmanager.AccountService;
 import net.consensys.liszt.blockchainmanager.*;
@@ -46,9 +47,9 @@ public class ControllerImp implements Controller {
     transferService.addTransfer(rtx);
 
     List<RTransfer> transfers;
-    List<RTransfer> invalidTransfers;
+    List<RTransfer> invalidTransfers = new ArrayList<>();
     do {
-      transfers = transferService.selectRTransfersForNextBatch(this.lastRootHash);
+      transfers = transferService.selectRTransfersForNextBatch(this.lastRootHash, invalidTransfers);
       if (!transfers.isEmpty()) {
         break;
       }

@@ -22,5 +22,6 @@ public interface TransferService {
    * @param fatherRootHash - the starting point
    * @return the list of transfer selected.
    */
-  List<RTransfer> selectRTransfersForNextBatch(Hash fatherRootHash);
+  List<RTransfer> selectRTransfersForNextBatch(
+      Hash fatherRootHash, List<RTransfer> invalidTransfers);
 }

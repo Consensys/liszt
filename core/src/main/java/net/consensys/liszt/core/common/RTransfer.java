@@ -1,13 +1,11 @@
 package net.consensys.liszt.core.common;
 
 import java.math.BigInteger;
+import java.util.Objects;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
 
-/**
- * Represents a transfer transaction for a rollup, as seen by a user. TODO: choose the rights types
- * for bytes (do as Pantheon)
- */
+/** Represents a transfer transaction for a rollup, as seen by a user. for bytes (do as Pantheon) */
 public class RTransfer {
   public final int nonce;
   public final PublicKey from;
@@ -40,5 +38,24 @@ public class RTransfer {
 
   public byte[] hash() {
     return null;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    RTransfer rTransfer = (RTransfer) o;
+    return nonce == rTransfer.nonce
+        && rIdFrom == rTransfer.rIdFrom
+        && rIdTo == rTransfer.rIdTo
+        && Objects.equals(from, rTransfer.from)
+        && Objects.equals(to, rTransfer.to)
+        && Objects.equals(amount, rTransfer.amount)
+        && Objects.equals(sig, rTransfer.sig);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(nonce, from, to, amount, rIdFrom, rIdTo, sig);
   }
 }
