@@ -1,43 +1,59 @@
 package net.consensys.liszt.transfermanager;
 
-import java.util.List;
+import java.util.*;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 
 public class BatchServiceImpl implements BatchService {
+  private final Map<Hash, Batch> batches;
+  private final Map<Hash, List<BatchStatus>> batchStatusesForTransfer;
+  private final Queue<Batch> batchesToProve;
+
+  public BatchServiceImpl() {
+    batches = new HashMap<>();
+    batchStatusesForTransfer = new HashMap<>();
+    batchesToProve = new LinkedList<>();
+  }
 
   @Override
-  public void addToBatch(List<RTransfer> transfers, Hash rootHash) {}
+  public BatchStatus startNewBatch(Hash fatherRootHash, Hash rootHash, List<RTransfer> transfers) {
+    Batch batch = new Batch(fatherRootHash, rootHash, transfers);
+    batches.put(rootHash, batch);
+    batchesToProve.add(batch);
 
-  @Override
-  public BatchState startNewBatch(Hash fatherRootHash) {
-    return null;
+    BatchStatus batchStatus =
+        new BatchStatus(
+            rootHash, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+
+    for (RTransfer transfer : transfers) {
+      List<BatchStatus> statuses = batchStatusesForTransfer.get(transfer.hash);
+      if (statuses == null) {
+        statuses = new ArrayList<>();
+      }
+      statuses.add(batchStatus);
+      batchStatusesForTransfer.put(transfer.hash, statuses);
+    }
+    return batchStatus;
   }
 
   @Override
   public Batch getBatchToProve() {
-    return null;
-  }
-
-  @Override
-  public void storeGeneratedProof(Hash roothash, byte[] proof) {}
-
-  @Override
-  public byte[] generateTransaction(Hash roothash) {
-    return new byte[0];
+    return batchesToProve.poll();
   }
 
   @Override
   public Batch getBatch(Hash rootHash) {
-    return null;
+    return batches.get(rootHash);
   }
 
   @Override
-  public List<BatchState> getBatchesForTransfer(Hash hash) {
-    return null;
+  public List<BatchStatus> getBatchesForTransfer(RTransfer transfer) {
+    return batchStatusesForTransfer.get(transfer.hash);
   }
 
   @Override
-  public void updateBatchStatus(Batch batch, int blockHight, Hash blockHash) {}
+  public void updateBatchStatus(Batch batch, int blockHight, Hash blockHash) {
+    // TODO
+  }
 }

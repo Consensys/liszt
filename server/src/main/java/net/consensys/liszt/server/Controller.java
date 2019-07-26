@@ -17,7 +17,7 @@ public interface Controller {
   boolean addTransfer(RTransfer rtx);
 
   /** @return the state of the transfer. */
-  RTransferState getRTransferStatus(Hash transferHash);
+  RTransferState getRTransferStatus(RTransfer transfer);
 
   /**
    * Callback invoked on every new proof generated
