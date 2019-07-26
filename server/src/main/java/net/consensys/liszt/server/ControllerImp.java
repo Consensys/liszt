@@ -10,7 +10,7 @@ import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.provermanager.ProverService;
 import net.consensys.liszt.transfermanager.BatchService;
-import net.consensys.liszt.transfermanager.BatchState;
+import net.consensys.liszt.transfermanager.BatchStatus;
 import net.consensys.liszt.transfermanager.RTransferState;
 import net.consensys.liszt.transfermanager.TransferService;
 
@@ -56,10 +56,10 @@ public class ControllerImp implements Controller {
       invalidTransfers = accountService.updateIfAllTransfersValid(transfers, this.lastRootHash);
     } while (!transfers.isEmpty() && invalidTransfers.isEmpty());
 
-    batchService.startNewBatch(this.lastRootHash);
-    lastRootHash = accountService.getLastAcceptedRootHash();
-    batchService.addToBatch(transfers, lastRootHash);
+    Hash newRootHash = accountService.getLastAcceptedRootHash();
+    batchService.startNewBatch(lastRootHash, newRootHash, transfers);
     Batch batch = batchService.getBatchToProve();
+    this.lastRootHash = newRootHash;
     proveService.proveBatch(batch);
     return true;
   }
@@ -81,9 +81,9 @@ public class ControllerImp implements Controller {
   }
 
   @Override
-  public RTransferState getRTransferStatus(Hash transferHash) {
-    List<BatchState> batchStates = batchService.getBatchesForTransfer(transferHash);
-    RTransferState rTransferState = new RTransferState(transferHash, batchStates);
+  public RTransferState getRTransferStatus(RTransfer transfer) {
+    List<BatchStatus> batchStates = batchService.getBatchesForTransfer(transfer);
+    RTransferState rTransferState = new RTransferState(transfer, batchStates);
     return rTransferState;
   }
 }

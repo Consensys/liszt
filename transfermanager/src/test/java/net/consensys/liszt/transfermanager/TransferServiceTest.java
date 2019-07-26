@@ -45,8 +45,8 @@ public class TransferServiceTest {
   @Test
   public void invalidTransfersAreFilteredOut() {
     List<RTransfer> invalidTransfers = new ArrayList<>();
-    invalidTransfers.add(createMockTransfer(1));
-    invalidTransfers.add(createMockTransfer(2));
+    invalidTransfers.add(TransferTestUtil.createMockTransfer(1));
+    invalidTransfers.add(TransferTestUtil.createMockTransfer(2));
     Hash hash1 = HashUtil.hash("1");
     List<RTransfer> transfersForBatch1 =
         transferService.selectRTransfersForNextBatch(hash1, invalidTransfers);
@@ -56,12 +56,8 @@ public class TransferServiceTest {
   private List<RTransfer> transfers() {
     List<RTransfer> transfers = new ArrayList<>();
     for (int i = 0; i < TRANSFER_COUNT; i++) {
-      transfers.add(createMockTransfer(i));
+      transfers.add(TransferTestUtil.createMockTransfer(i));
     }
     return transfers;
-  }
-
-  private RTransfer createMockTransfer(int i) {
-    return new RTransfer(i, null, null, null, 0, 0, null);
   }
 }
