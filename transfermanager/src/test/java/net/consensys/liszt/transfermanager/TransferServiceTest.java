@@ -21,7 +21,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void transferCache() {
+  public void transferIsCached() {
     Hash hash1 = HashUtil.hash("1");
     List<RTransfer> transfersForBatch1 =
         transferService.selectRTransfersForNextBatch(hash1, new ArrayList<>());
@@ -43,7 +43,7 @@ public class TransferServiceTest {
   }
 
   @Test
-  public void invalidTransfersFiltering() {
+  public void invalidTransfersAreFilteredOut() {
     List<RTransfer> invalidTransfers = new ArrayList<>();
     invalidTransfers.add(createMockTransfer(1));
     invalidTransfers.add(createMockTransfer(2));

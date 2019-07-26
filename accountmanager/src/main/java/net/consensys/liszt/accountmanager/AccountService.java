@@ -11,7 +11,7 @@ public interface AccountService {
   boolean checkBasicValidity(RTransfer transfer, Hash fatherRootHash);
 
   /**
-   * Update the state is all submitted transfer are valid, otherwise return list of invalid
+   * Update the state if all submitted transfer are valid, otherwise return list of invalid
    * transfers
    */
   List<RTransfer> updateIfAllTransfersValid(List<RTransfer> transfers, Hash fatherRootHash);
