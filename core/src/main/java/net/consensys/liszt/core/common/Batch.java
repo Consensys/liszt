@@ -2,6 +2,7 @@ package net.consensys.liszt.core.common;
 
 import java.util.List;
 
+/** Btach of transactions which correspond to state transition fatherRootHash->rootHash */
 public class Batch {
   public final byte[] fatherRootHash;
   public final byte[] rootHash;

@@ -10,6 +10,9 @@ public class HashUtil {
   private static MessageDigest messageDigest() {
     MessageDigest digest;
     try {
+      /* TODO sha-256 is temporary  solution for the POC,
+       *  we need to find and implement zkp friendly hash function */
+
       digest = MessageDigest.getInstance("SHA-256");
     } catch (NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
@@ -25,6 +28,13 @@ public class HashUtil {
     return new Hash(md.digest());
   }
 
+  /**
+   * Concatenate input hashes and return hash of the concatenation.
+   *
+   * @param hash1
+   * @param hash2
+   * @return Hash of both inputs
+   */
   public static Hash combine(Hash hash1, Hash hash2) {
     MessageDigest md = messageDigest();
     md.update(hash1.hash);

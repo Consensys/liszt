@@ -20,6 +20,7 @@ public interface TransferService {
    * Select the transfer for the next batch.
    *
    * @param fatherRootHash - the starting point
+   * @param invalidTransfers - transfers which need to be excluded
    * @return the list of transfer selected.
    */
   List<RTransfer> selectRTransfersForNextBatch(
