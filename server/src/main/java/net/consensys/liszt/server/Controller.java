@@ -1,9 +1,11 @@
 package net.consensys.liszt.server;
 
+import net.consensys.liszt.accountmanager.Account;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
+import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.transfermanager.RTransferState;
 
 public interface Controller {
@@ -39,4 +41,10 @@ public interface Controller {
    * @param batch, blockHight, blockHash
    */
   void onBatchIncluded(Batch batch, int blockHight, Hash blockHash);
+
+  /**
+   * @param owner, owner's public key
+   * @return Account corresponding to the latest rollup state.
+   */
+  Account getAccount(PublicKey owner);
 }

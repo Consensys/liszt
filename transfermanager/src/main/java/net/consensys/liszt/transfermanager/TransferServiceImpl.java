@@ -32,9 +32,9 @@ public class TransferServiceImpl implements TransferService {
       return selectedInThePast;
     } else if (pendingTransfers.size() > batchSize) {
       if (selectedInThePast != null) {
-        List<RTransfer> cpy = new ArrayList<>(selectedInThePast);
-        Collections.reverse(cpy);
-        for (RTransfer t : cpy) {
+        List<RTransfer> selectedInThePastCpy = new ArrayList<>(selectedInThePast);
+        Collections.reverse(selectedInThePastCpy);
+        for (RTransfer t : selectedInThePastCpy) {
           boolean isInvalid = invalidTransfers.contains(t);
           if (!isInvalid) {
             pendingTransfers.add(0, t);

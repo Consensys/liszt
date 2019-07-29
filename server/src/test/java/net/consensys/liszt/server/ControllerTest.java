@@ -58,22 +58,18 @@ public class ControllerTest {
           controller.addTransfer(createMockTransferFromAliceToBob(i, BigInteger.valueOf(5)));
       Assert.assertTrue(isValid);
     }
-    Account aliceAcc = accountService.getAccount(alice, accountService.getLastAcceptedRootHash());
+    Account aliceAcc = controller.getAccount(alice);
     Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(55));
   }
 
   @Test
   public void illegalTransfersShouldBeRejected() {
-    Hash lastRootHash = accountService.getLastAcceptedRootHash();
     for (int i = 0; i < 10; i++) {
       boolean isValid =
           controller.addTransfer(createMockTransferFromAliceToBob(i, BigInteger.valueOf(800)));
       Assert.assertTrue(isValid);
     }
-    Hash newRootHash = accountService.getLastAcceptedRootHash();
-    Assert.assertEquals(lastRootHash, newRootHash);
-
-    Account aliceAcc = accountService.getAccount(alice, accountService.getLastAcceptedRootHash());
+    Account aliceAcc = controller.getAccount(alice);
     Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(100));
   }
 
@@ -83,7 +79,7 @@ public class ControllerTest {
       controller.addTransfer(createMockTransferFromAliceToBob(i, BigInteger.valueOf(800)));
       controller.addTransfer(createMockTransferFromAliceToBob(i + 1, BigInteger.valueOf(5)));
     }
-    Account aliceAcc = accountService.getAccount(alice, accountService.getLastAcceptedRootHash());
+    Account aliceAcc = controller.getAccount(alice);
     Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(55));
   }
 

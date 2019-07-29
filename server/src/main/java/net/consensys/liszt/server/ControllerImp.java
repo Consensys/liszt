@@ -2,12 +2,14 @@ package net.consensys.liszt.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.consensys.liszt.accountmanager.Account;
 import net.consensys.liszt.accountmanager.AccountService;
 import net.consensys.liszt.blockchainmanager.*;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
+import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.provermanager.ProverService;
 import net.consensys.liszt.transfermanager.BatchService;
 import net.consensys.liszt.transfermanager.BatchStatus;
@@ -58,14 +60,12 @@ public class ControllerImp implements Controller {
       invalidTransfers = accountService.updateIfAllTransfersValid(transfers, this.lastRootHash);
     } while (!invalidTransfers.isEmpty());
 
-    if (transfers.size() != 0) {
+    Hash newRootHash = accountService.getLastAcceptedRootHash();
+    batchService.startNewBatch(lastRootHash, newRootHash, transfers);
+    Batch batch = batchService.getBatchToProve();
+    this.lastRootHash = newRootHash;
+    proveService.proveBatch(batch);
 
-      Hash newRootHash = accountService.getLastAcceptedRootHash();
-      batchService.startNewBatch(lastRootHash, newRootHash, transfers);
-      Batch batch = batchService.getBatchToProve();
-      this.lastRootHash = newRootHash;
-      proveService.proveBatch(batch);
-    }
     return true;
   }
 
@@ -90,5 +90,9 @@ public class ControllerImp implements Controller {
     List<BatchStatus> batchStates = batchService.getBatchesForTransfer(transfer);
     RTransferState rTransferState = new RTransferState(transfer, batchStates);
     return rTransferState;
+  }
+
+  public Account getAccount(PublicKey owner) {
+    return accountService.getAccount(owner, accountService.getLastAcceptedRootHash());
   }
 }
