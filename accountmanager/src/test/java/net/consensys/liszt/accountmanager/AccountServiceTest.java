@@ -23,7 +23,8 @@ public class AccountServiceTest {
 
   @Before
   public void setUp() {
-    LinkedHashMap<PublicKey, Account> accounts = accounts();
+    List<PublicKey> publicKeys = Arrays.asList(new PublicKey[] {alice, bob});
+    LinkedHashMap<PublicKey, Account> accounts = Accounts.accounts(publicKeys);
     HashMap<Hash, LinkedHashMap<PublicKey, Account>> accountState = new HashMap<>();
     initialRootHash = Accounts.calculateNewRootHash(accounts);
     accountState.put(initialRootHash, accounts);
@@ -101,14 +102,5 @@ public class AccountServiceTest {
 
     transfers.add(transfer);
     return transfers;
-  }
-
-  private static LinkedHashMap<PublicKey, Account> accounts() {
-    Account aliceAccount = Accounts.createAccount(alice, 0, BigInteger.valueOf(100), 0);
-    Account bobAccount = Accounts.createAccount(bob, 0, BigInteger.valueOf(100), 0);
-    LinkedHashMap<PublicKey, Account> accounts = new LinkedHashMap<>();
-    accounts.put(alice, aliceAccount);
-    accounts.put(bob, bobAccount);
-    return accounts;
   }
 }

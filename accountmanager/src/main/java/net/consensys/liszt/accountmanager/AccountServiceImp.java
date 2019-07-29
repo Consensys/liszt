@@ -49,7 +49,7 @@ public class AccountServiceImp implements AccountService {
     if (notAcceptedTransfers.isEmpty()) {
       Hash newRootHash = Accounts.calculateNewRootHash(tmpAccounts);
       accountState.put(newRootHash, tmpAccounts);
-      lastAcceptedRootHash = newRootHash;
+      this.lastAcceptedRootHash = newRootHash;
     }
     return notAcceptedTransfers;
   }
@@ -67,6 +67,7 @@ public class AccountServiceImp implements AccountService {
   private boolean innerRollupTransfer(
       RTransfer transfer, LinkedHashMap<PublicKey, Account> tmpAccounts) {
     Account fromAcc = tmpAccounts.get(transfer.from);
+
     BigInteger newFromAccBalance = fromAcc.amount.subtract(transfer.amount);
     if (newFromAccBalance.compareTo(BigInteger.ZERO) == -1) {
       return false;
