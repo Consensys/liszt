@@ -3,6 +3,7 @@ package net.consensys.liszt.accountmanager;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.HashUtil;
@@ -30,5 +31,14 @@ public class Accounts {
     }
     MerkleTree mt = new MerkleTree(hashList);
     return mt.getRootHash();
+  }
+
+  public static LinkedHashMap<PublicKey, Account> accounts(List<PublicKey> publicKeys) {
+    LinkedHashMap<PublicKey, Account> accounts = new LinkedHashMap<>();
+    for (PublicKey pk : publicKeys) {
+      Account aliceAccount = Accounts.createAccount(pk, 0, BigInteger.valueOf(100), 0);
+      accounts.put(pk, aliceAccount);
+    }
+    return accounts;
   }
 }

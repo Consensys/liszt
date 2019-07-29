@@ -29,13 +29,14 @@ public class ControllerImp implements Controller {
       AccountService accountService,
       BatchService batchService,
       ProverService proveService,
-      BlockchainService blockchainService) {
+      BlockchainService blockchainService,
+      Hash lastRootHash) {
     this.transferService = transferService;
     this.accountService = accountService;
     this.batchService = batchService;
     this.proveService = proveService;
     this.blockchainService = blockchainService;
-    lastRootHash = null; // new Hash();
+    this.lastRootHash = lastRootHash;
   }
 
   @Override
@@ -50,17 +51,21 @@ public class ControllerImp implements Controller {
     List<RTransfer> invalidTransfers = new ArrayList<>();
     do {
       transfers = transferService.selectRTransfersForNextBatch(this.lastRootHash, invalidTransfers);
-      if (!transfers.isEmpty()) {
-        break;
+      if (transfers.isEmpty()) {
+        return true;
       }
-      invalidTransfers = accountService.updateIfAllTransfersValid(transfers, this.lastRootHash);
-    } while (!transfers.isEmpty() && invalidTransfers.isEmpty());
 
-    Hash newRootHash = accountService.getLastAcceptedRootHash();
-    batchService.startNewBatch(lastRootHash, newRootHash, transfers);
-    Batch batch = batchService.getBatchToProve();
-    this.lastRootHash = newRootHash;
-    proveService.proveBatch(batch);
+      invalidTransfers = accountService.updateIfAllTransfersValid(transfers, this.lastRootHash);
+    } while (!invalidTransfers.isEmpty());
+
+    if (transfers.size() != 0) {
+
+      Hash newRootHash = accountService.getLastAcceptedRootHash();
+      batchService.startNewBatch(lastRootHash, newRootHash, transfers);
+      Batch batch = batchService.getBatchToProve();
+      this.lastRootHash = newRootHash;
+      proveService.proveBatch(batch);
+    }
     return true;
   }
 
