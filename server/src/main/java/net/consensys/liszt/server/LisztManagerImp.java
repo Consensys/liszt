@@ -11,13 +11,14 @@ import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.core.crypto.PublicKey;
+import net.consensys.liszt.provermanager.ProverListener;
 import net.consensys.liszt.provermanager.ProverService;
 import net.consensys.liszt.provermanager.ProverServiceImp;
 import net.consensys.liszt.transfermanager.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LisztManagerImp implements LisztManager {
+public class LisztManagerImp implements LisztManager, ProverListener {
 
   private final TransferService transferService;
   private final AccountService accountService;
@@ -34,6 +35,7 @@ public class LisztManagerImp implements LisztManager {
     proveService = new ProverServiceImp();
     blockchainService = new BlockchainServiceImp();
     this.lastRootHash = initConf.initialRootHash;
+    proveService.registerListener(this);
   }
 
   @Override
@@ -94,7 +96,7 @@ public class LisztManagerImp implements LisztManager {
     PublicKey alice = new PublicKey("Alice");
     PublicKey bob = new PublicKey("Bob");
     PublicKey zac = new PublicKey("Zac");
-    List<PublicKey> publicKeys = Arrays.asList(new PublicKey[] {alice, bob});
+    List<PublicKey> publicKeys = Arrays.asList(new PublicKey[] {alice, bob, zac});
     LinkedHashMap<PublicKey, Account> accounts = Accounts.accounts(publicKeys);
     return accounts;
   }
