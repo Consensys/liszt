@@ -14,6 +14,10 @@ More information can be found here: https://hackmd.io/gmZ_SkryRDOF7JeG6_rpTw?vie
 ### Building:
 - ```git clone https://github.com/ConsenSys/liszt```
 - ```gradle test```
+- ```gradle shadowJar``` 
+
+### Running REST server:
+- ```java --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -Xms6000m -Xmx12048m -classpath server/build/libs/liszt-ws.jar net.consensys.liszt.server.Start```
 
 ### Architecture:
 <img width="760" alt="Screenshot 2019-07-25 at 13 16 49" src="https://user-images.githubusercontent.com/7760067/61870546-a96d5c00-aede-11e9-8858-6db6590187ef.png">

@@ -3,7 +3,7 @@ package net.consensys.liszt.core.crypto;
 import java.util.Objects;
 
 public class PublicKey {
-  private final String owner;
+  public final String owner;
 
   public PublicKey(String owner) {
     this.owner = owner;
