@@ -16,7 +16,7 @@ More information can be found here: https://hackmd.io/gmZ_SkryRDOF7JeG6_rpTw?vie
 - ```gradle test```
 - ```gradle shadowJar``` 
 
-### Running rest server:
+### Running REST server:
 - ```java --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -Xms6000m -Xmx12048m -classpath server/build/libs/liszt-ws.jar net.consensys.liszt.server.Start```
 
 ### Architecture:
