@@ -22,6 +22,7 @@ subprojects {
     }
 
     dependencies {
+        implementation "org.springframework.boot:spring-boot-starter-web:2.1.2.RELEASE"
         testImplementation 'junit:junit:4.12'
     }
 

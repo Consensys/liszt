@@ -1,50 +1,41 @@
 package net.consensys.liszt.server;
 
-import net.consensys.liszt.accountmanager.Account;
-import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
-import net.consensys.liszt.core.crypto.Hash;
-import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.core.crypto.PublicKey;
-import net.consensys.liszt.transfermanager.RTransferState;
+import net.consensys.liszt.core.crypto.Signature;
+import net.consensys.liszt.server.dto.Acccount;
+import net.consensys.liszt.server.dto.Transfer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-public interface Controller {
+@RestController
+public class Controller {
 
-  /**
-   * Add a transfer to the list of transfers.
-   *
-   * @param rtx - the transfer
-   * @return true if the transfer can be included, false otherwise.
-   */
-  boolean addTransfer(RTransfer rtx);
+  @Autowired private LisztManager manager;
 
-  /** @return the state of the transfer. */
-  RTransferState getRTransferStatus(RTransfer transfer);
+  @GetMapping("/accounts/{owner}")
+  public Acccount accounts(@PathVariable String owner) {
+    net.consensys.liszt.accountmanager.Account rollupAccount =
+        manager.getAccount(new PublicKey(owner));
+    return new Acccount(rollupAccount.publicKey.owner, rollupAccount.amount, rollupAccount.nonce);
+  }
 
-  /**
-   * Callback invoked on every new proof generated
-   *
-   * @param proof
-   */
-  void onNewProof(Proof proof);
-
-  /**
-   * Callback invoked on chain reorganization
-   *
-   * @param rootHash rootHash of the new rollup
-   */
-  void onChainReorg(Hash rootHash);
-
-  /**
-   * Callback invoked when batch and corresponding proof are included in a block
-   *
-   * @param batch, blockHight, blockHash
-   */
-  void onBatchIncluded(Batch batch, int blockHight, Hash blockHash);
-
-  /**
-   * @param owner, owner's public key
-   * @return Account corresponding to the latest rollup state.
-   */
-  Account getAccount(PublicKey owner);
+  // Example:
+  // curl -X POST localhost:8080/transfers -H 'Content-type:application/json' -d '{"from":
+  // "Alice","to": "Bob","amount": "22", "nonce":"0", "rIdFrom":"1", "rIdTo":"1"}'
+  @PostMapping("/transfers")
+  public long newTransfer(@RequestBody Transfer transfer) {
+    RTransfer rTransfer =
+        new RTransfer(
+            transfer.nonce,
+            new PublicKey(transfer.from),
+            new PublicKey(transfer.to),
+            transfer.amount,
+            transfer.rIdFrom,
+            transfer.rIdTo,
+            new Signature());
+    manager.addTransfer(rTransfer);
+    return HttpStatus.CREATED.value();
+  }
 }

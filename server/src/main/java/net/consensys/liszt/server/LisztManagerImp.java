@@ -1,9 +1,10 @@
 package net.consensys.liszt.server;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import net.consensys.liszt.accountmanager.Account;
 import net.consensys.liszt.accountmanager.AccountService;
+import net.consensys.liszt.accountmanager.AccountServiceImp;
+import net.consensys.liszt.accountmanager.Accounts;
 import net.consensys.liszt.blockchainmanager.*;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
@@ -11,38 +12,32 @@ import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.provermanager.ProverService;
-import net.consensys.liszt.transfermanager.BatchService;
-import net.consensys.liszt.transfermanager.BatchStatus;
-import net.consensys.liszt.transfermanager.RTransferState;
-import net.consensys.liszt.transfermanager.TransferService;
+import net.consensys.liszt.provermanager.ProverServiceImp;
+import net.consensys.liszt.transfermanager.*;
+import org.springframework.stereotype.Service;
 
-public class ControllerImp implements Controller {
+@Service
+public class LisztManagerImp implements LisztManager {
 
   private final TransferService transferService;
   private final AccountService accountService;
   private final BatchService batchService;
   private final ProverService proveService;
   private final BlockchainService blockchainService;
-
   private Hash lastRootHash;
 
-  public ControllerImp(
-      TransferService transferService,
-      AccountService accountService,
-      BatchService batchService,
-      ProverService proveService,
-      BlockchainService blockchainService,
-      Hash lastRootHash) {
-    this.transferService = transferService;
-    this.accountService = accountService;
-    this.batchService = batchService;
-    this.proveService = proveService;
-    this.blockchainService = blockchainService;
-    this.lastRootHash = lastRootHash;
+  public LisztManagerImp() {
+    InitialConfiguration initConf = new InitialConfiguration();
+    transferService = new TransferServiceImpl(initConf.batchSize);
+    accountService = new AccountServiceImp(initConf.accountState, initConf.initialRootHash);
+    batchService = new BatchServiceImpl();
+    proveService = new ProverServiceImp();
+    blockchainService = new BlockchainServiceImp();
+    this.lastRootHash = initConf.initialRootHash;
   }
 
   @Override
-  public boolean addTransfer(RTransfer rtx) {
+  public synchronized boolean addTransfer(RTransfer rtx) {
     if (!accountService.checkBasicValidity(rtx, this.lastRootHash)) {
       return false;
     }
@@ -65,34 +60,42 @@ public class ControllerImp implements Controller {
     Batch batch = batchService.getBatchToProve();
     this.lastRootHash = newRootHash;
     proveService.proveBatch(batch);
-
     return true;
   }
 
   @Override
-  public void onNewProof(Proof proof) {
+  public synchronized void onNewProof(Proof proof) {
     Batch batch = batchService.getBatch(proof.rootHash);
     blockchainService.submit(batch, proof);
   }
 
   @Override
-  public void onChainReorg(Hash rootHash) {
+  public synchronized void onChainReorg(Hash rootHash) {
     this.lastRootHash = rootHash;
   }
 
   @Override
-  public void onBatchIncluded(Batch batch, int blockHight, Hash blockHash) {
+  public synchronized void onBatchIncluded(Batch batch, int blockHight, Hash blockHash) {
     batchService.updateBatchStatus(batch, blockHight, blockHash);
   }
 
   @Override
-  public RTransferState getRTransferStatus(RTransfer transfer) {
+  public synchronized RTransferState getRTransferStatus(RTransfer transfer) {
     List<BatchStatus> batchStates = batchService.getBatchesForTransfer(transfer);
     RTransferState rTransferState = new RTransferState(transfer, batchStates);
     return rTransferState;
   }
 
-  public Account getAccount(PublicKey owner) {
+  public synchronized Account getAccount(PublicKey owner) {
     return accountService.getAccount(owner, accountService.getLastAcceptedRootHash());
+  }
+
+  private LinkedHashMap<PublicKey, Account> createAccounts() {
+    PublicKey alice = new PublicKey("Alice");
+    PublicKey bob = new PublicKey("Bob");
+    PublicKey zac = new PublicKey("Zac");
+    List<PublicKey> publicKeys = Arrays.asList(new PublicKey[] {alice, bob});
+    LinkedHashMap<PublicKey, Account> accounts = Accounts.accounts(publicKeys);
+    return accounts;
   }
 }
