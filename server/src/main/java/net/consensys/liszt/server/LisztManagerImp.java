@@ -1,14 +1,13 @@
 package net.consensys.liszt.server;
 
 import java.util.*;
-import net.consensys.liszt.accountmanager.Account;
-import net.consensys.liszt.accountmanager.AccountService;
-import net.consensys.liszt.accountmanager.AccountServiceImp;
-import net.consensys.liszt.accountmanager.Accounts;
+
+import net.consensys.liszt.accountmanager.*;
 import net.consensys.liszt.blockchainmanager.*;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
+import net.consensys.liszt.core.crypto.HashUtil;
 import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.provermanager.ProverListener;
@@ -28,18 +27,20 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   private Hash lastRootHash;
 
   public LisztManagerImp() {
-    InitialConfiguration initConf = new InitialConfiguration();
-    transferService = new TransferServiceImpl(initConf.batchSize);
-    accountService = new AccountServiceImp(initConf.accountState, initConf.initialRootHash);
+    AccountsStateProvider accountsStateProvider = new AccountsStateProvider();
+    Map<Hash,AccountsState> accountsState = accountsStateProvider.initialAccountsState;
+    this.lastRootHash = accountsStateProvider.lastAcceptedRootHash;
+    transferService = new TransferServiceImpl(accountsStateProvider.batchSize);
+    accountService = new AccountServiceImp(new AccountRepositoryImp(accountsState), accountsStateProvider.lastAcceptedRootHash);
     batchService = new BatchServiceImpl();
     proveService = new ProverServiceImp();
     blockchainService = new BlockchainServiceImp();
-    this.lastRootHash = initConf.initialRootHash;
     proveService.registerListener(this);
   }
 
   @Override
   public synchronized boolean addTransfer(RTransfer rtx) {
+
     if (!accountService.checkBasicValidity(rtx, this.lastRootHash)) {
       return false;
     }
@@ -89,15 +90,6 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   }
 
   public synchronized Account getAccount(PublicKey owner) {
-    return accountService.getAccount(owner, accountService.getLastAcceptedRootHash());
-  }
-
-  private LinkedHashMap<PublicKey, Account> createAccounts() {
-    PublicKey alice = new PublicKey("Alice");
-    PublicKey bob = new PublicKey("Bob");
-    PublicKey zac = new PublicKey("Zac");
-    List<PublicKey> publicKeys = Arrays.asList(new PublicKey[] {alice, bob, zac});
-    LinkedHashMap<PublicKey, Account> accounts = Accounts.accounts(publicKeys);
-    return accounts;
+    return accountService.getAccount(accountService.getLastAcceptedRootHash(), HashUtil.hash(owner.owner));
   }
 }

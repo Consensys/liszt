@@ -3,7 +3,6 @@ package net.consensys.liszt.accountmanager;
 import java.util.List;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
-import net.consensys.liszt.core.crypto.PublicKey;
 
 public interface AccountService {
 
@@ -20,5 +19,5 @@ public interface AccountService {
   Hash getLastAcceptedRootHash();
 
   /** @return account for a given user */
-  Account getAccount(PublicKey owner, Hash rootHash);
+  Account getAccount(Hash owner, Hash rootHash);
 }
