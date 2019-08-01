@@ -1,14 +1,14 @@
 package net.consensys.liszt.accountmanager;
 
+import java.util.*;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.PublicKey;
-
-import java.util.*;
 
 public class AccountsStateProvider {
   public final int batchSize = 3;
   public final Hash lastAcceptedRootHash;
   public final Map<Hash, AccountsState> initialAccountsState;
+
   public AccountsStateProvider() {
     AccountsState accountsState = createAccountsState();
     lastAcceptedRootHash = Accounts.calculateNewRootHash(accountsState);

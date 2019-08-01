@@ -25,11 +25,10 @@ public class AccountServiceTest {
   @Before
   public void setUp() {
     AccountsStateProvider accountsStateProvider = new AccountsStateProvider();
-    Map<Hash,AccountsState> accountsState = accountsStateProvider.initialAccountsState;
+    Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState;
     this.initialRootHash = accountsStateProvider.lastAcceptedRootHash;
     AccountRepository accountRepository = new AccountRepositoryImp(accountsState);
-   this.accountService = new AccountServiceImp(accountRepository, initialRootHash);
-
+    this.accountService = new AccountServiceImp(accountRepository, initialRootHash);
   }
 
   @Test
@@ -75,12 +74,12 @@ public class AccountServiceTest {
   }
 
   @Test
-  public void crossRollupTransferShouldBeLocked(){
+  public void crossRollupTransferShouldBeLocked() {
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer1 =
-            new RTransfer(0, alice, kate, BigInteger.valueOf(20), 1, 0, new Signature());
+        new RTransfer(0, alice, kate, BigInteger.valueOf(20), 1, 0, new Signature());
     RTransfer transfer2 =
-            new RTransfer(0, zac, kate, BigInteger.valueOf(30), 1, 0, new Signature());
+        new RTransfer(0, zac, kate, BigInteger.valueOf(30), 1, 0, new Signature());
 
     transfers.add(transfer1);
     transfers.add(transfer2);
@@ -88,9 +87,9 @@ public class AccountServiceTest {
     accountService.updateIfAllTransfersValid(transfers, initialRootHash);
     Hash updatedRootHash = accountService.getLastAcceptedRootHash();
     BigInteger aliceAmount =
-            accountService.getAccount(updatedRootHash, HashUtil.hash(alice.owner)).amount;
+        accountService.getAccount(updatedRootHash, HashUtil.hash(alice.owner)).amount;
     BigInteger zacAmount =
-            accountService.getAccount(updatedRootHash, HashUtil.hash(zac.owner)).amount;
+        accountService.getAccount(updatedRootHash, HashUtil.hash(zac.owner)).amount;
 
     assertEquals(aliceAmount, BigInteger.valueOf(80));
     assertEquals(zacAmount, BigInteger.valueOf(70));
@@ -118,8 +117,6 @@ public class AccountServiceTest {
           assertTrue(isValid);
         });
   }
-
-
 
   private List<RTransfer> innerRollupTransfers() {
     List<RTransfer> transfers = new ArrayList<>();
@@ -150,14 +147,13 @@ public class AccountServiceTest {
   private List<RTransfer> crossRollupTransfers() {
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer1 =
-            new RTransfer(0, alice, kate, BigInteger.valueOf(20), 1, 0, new Signature());
+        new RTransfer(0, alice, kate, BigInteger.valueOf(20), 1, 0, new Signature());
     RTransfer transfer2 =
-            new RTransfer(0, zac, kate, BigInteger.valueOf(30), 1, 0, new Signature());
+        new RTransfer(0, zac, kate, BigInteger.valueOf(30), 1, 0, new Signature());
 
     transfers.add(transfer1);
     transfers.add(transfer2);
 
     return transfers;
   }
-
 }

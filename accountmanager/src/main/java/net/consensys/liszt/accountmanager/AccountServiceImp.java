@@ -11,8 +11,7 @@ public class AccountServiceImp implements AccountService {
   private final AccountRepository accountRepository;
   private Hash lastAcceptedRootHash;
 
-  public AccountServiceImp(
-          AccountRepository accountRepository, Hash initialRootHash) {
+  public AccountServiceImp(AccountRepository accountRepository, Hash initialRootHash) {
     this.accountRepository = accountRepository;
     this.lastAcceptedRootHash = initialRootHash;
   }

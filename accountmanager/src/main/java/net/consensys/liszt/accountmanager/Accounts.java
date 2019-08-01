@@ -21,10 +21,11 @@ public class Accounts {
     return new Account(publicKey, id, amount, nonce, hash, false);
   }
 
-  public static Account createLockAccount(PublicKey publicKey, int id, BigInteger amount, int nonce) {
+  public static Account createLockAccount(
+      PublicKey publicKey, int id, BigInteger amount, int nonce) {
     Hash hash =
-            HashUtil.hash(
-                    publicKey.toString(), String.valueOf(id), amount.toString(), String.valueOf(nonce));
+        HashUtil.hash(
+            publicKey.toString(), String.valueOf(id), amount.toString(), String.valueOf(nonce));
     return new Account(publicKey, id, amount, nonce, hash, true);
   }
 

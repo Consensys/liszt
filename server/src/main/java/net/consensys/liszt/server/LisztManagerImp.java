@@ -1,7 +1,6 @@
 package net.consensys.liszt.server;
 
 import java.util.*;
-
 import net.consensys.liszt.accountmanager.*;
 import net.consensys.liszt.blockchainmanager.*;
 import net.consensys.liszt.core.common.Batch;
@@ -28,10 +27,12 @@ public class LisztManagerImp implements LisztManager, ProverListener {
 
   public LisztManagerImp() {
     AccountsStateProvider accountsStateProvider = new AccountsStateProvider();
-    Map<Hash,AccountsState> accountsState = accountsStateProvider.initialAccountsState;
+    Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState;
     this.lastRootHash = accountsStateProvider.lastAcceptedRootHash;
     transferService = new TransferServiceImpl(accountsStateProvider.batchSize);
-    accountService = new AccountServiceImp(new AccountRepositoryImp(accountsState), accountsStateProvider.lastAcceptedRootHash);
+    accountService =
+        new AccountServiceImp(
+            new AccountRepositoryImp(accountsState), accountsStateProvider.lastAcceptedRootHash);
     batchService = new BatchServiceImpl();
     proveService = new ProverServiceImp();
     blockchainService = new BlockchainServiceImp();
@@ -90,6 +91,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   }
 
   public synchronized Account getAccount(PublicKey owner) {
-    return accountService.getAccount(accountService.getLastAcceptedRootHash(), HashUtil.hash(owner.owner));
+    return accountService.getAccount(
+        accountService.getLastAcceptedRootHash(), HashUtil.hash(owner.owner));
   }
 }

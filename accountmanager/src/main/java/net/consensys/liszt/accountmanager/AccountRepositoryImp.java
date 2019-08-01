@@ -1,8 +1,6 @@
 package net.consensys.liszt.accountmanager;
 
-import java.util.HashMap;
 import java.util.Map;
-
 import net.consensys.liszt.core.crypto.Hash;
 
 public class AccountRepositoryImp implements AccountRepository {

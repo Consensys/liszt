@@ -14,7 +14,8 @@ public class Account {
   public final Hash hash;
   public final boolean isLock;
 
-  protected Account(PublicKey publicKey, int id, BigInteger amount, int nonce, Hash hash, boolean isLock) {
+  protected Account(
+      PublicKey publicKey, int id, BigInteger amount, int nonce, Hash hash, boolean isLock) {
     this.publicKey = publicKey;
     this.id = id;
     this.amount = amount;
