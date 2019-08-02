@@ -24,9 +24,9 @@ public class AccountServiceTest {
 
   @Before
   public void setUp() {
-    AccountsStateProvider accountsStateProvider = new AccountsStateProvider();
-    Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState;
-    this.initialRootHash = accountsStateProvider.lastAcceptedRootHash;
+    AccountStateProvider accountsStateProvider = new InMemoryAccountsStateProvider();
+    Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState();
+    this.initialRootHash = accountsStateProvider.lastAcceptedRootHash();
     AccountRepository accountRepository = new AccountRepositoryImp(accountsState);
     this.accountService = new AccountServiceImp(accountRepository, initialRootHash);
   }

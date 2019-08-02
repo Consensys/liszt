@@ -20,4 +20,7 @@ public interface AccountService {
 
   /** @return account for a given user */
   Account getAccount(Hash owner, Hash rootHash);
+
+  /** @return list of locked accounts */
+  List<Account> getLockAccounts(Hash rootHash);
 }

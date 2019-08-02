@@ -26,13 +26,13 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   private Hash lastRootHash;
 
   public LisztManagerImp() {
-    AccountsStateProvider accountsStateProvider = new AccountsStateProvider();
-    Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState;
-    this.lastRootHash = accountsStateProvider.lastAcceptedRootHash;
-    transferService = new TransferServiceImpl(accountsStateProvider.batchSize);
+    AccountStateProvider accountsStateProvider = new InMemoryAccountsStateProvider();
+    Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState();
+    this.lastRootHash = accountsStateProvider.lastAcceptedRootHash();
+    transferService = new TransferServiceImpl(accountsStateProvider.batchSize());
     accountService =
         new AccountServiceImp(
-            new AccountRepositoryImp(accountsState), accountsStateProvider.lastAcceptedRootHash);
+            new AccountRepositoryImp(accountsState), accountsStateProvider.lastAcceptedRootHash());
     batchService = new BatchServiceImpl();
     proveService = new ProverServiceImp();
     blockchainService = new BlockchainServiceImp();
@@ -93,5 +93,9 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   public synchronized Account getAccount(PublicKey owner) {
     return accountService.getAccount(
         accountService.getLastAcceptedRootHash(), HashUtil.hash(owner.owner));
+  }
+
+  public synchronized List<Account> getLockAccounts() {
+    return accountService.getLockAccounts(accountService.getLastAcceptedRootHash());
   }
 }

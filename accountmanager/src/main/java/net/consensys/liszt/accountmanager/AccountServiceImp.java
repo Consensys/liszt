@@ -5,15 +5,18 @@ import java.util.*;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.HashUtil;
+import net.consensys.liszt.core.crypto.PublicKey;
 
 public class AccountServiceImp implements AccountService {
 
   private final AccountRepository accountRepository;
   private Hash lastAcceptedRootHash;
+  private List<Hash> lockedTransfers;
 
   public AccountServiceImp(AccountRepository accountRepository, Hash initialRootHash) {
     this.accountRepository = accountRepository;
     this.lastAcceptedRootHash = initialRootHash;
+    this.lockedTransfers = new ArrayList<>();
   }
 
   @Override
@@ -87,9 +90,17 @@ public class AccountServiceImp implements AccountService {
       return false;
     }
     Account newFromAcc = Accounts.updateAccount(fromAcc, newFromAccBalance);
-    Account lockedAcc = Accounts.createLockAccount(Accounts.Lock, 0, transfer.amount, 0);
+    Account lockedAcc =
+        Accounts.createLockAccount(new PublicKey(transfer.hash.asHex), 0, transfer.amount, 0);
     tmpAccounts.put(HashUtil.hash(newFromAcc.publicKey.owner), newFromAcc);
     tmpAccounts.put(transfer.hash, lockedAcc);
+    lockedTransfers.add(transfer.hash);
     return true;
+  }
+
+  public List<Account> getLockAccounts(Hash rootHash) {
+    List<Account> accs = new ArrayList<>();
+    lockedTransfers.forEach(h -> accs.add(getAccount(rootHash, h)));
+    return accs;
   }
 }
