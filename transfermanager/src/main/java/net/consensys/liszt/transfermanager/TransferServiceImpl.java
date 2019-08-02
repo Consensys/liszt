@@ -30,7 +30,7 @@ public class TransferServiceImpl implements TransferService {
     List<RTransfer> selectedInThePast = selectedTransfers.get(fatherRootHash);
     if (selectedInThePast != null && invalidTransfers.isEmpty()) {
       return selectedInThePast;
-    } else if (pendingTransfers.size() > batchSize) {
+    } else if (pendingTransfers.size() >= batchSize) {
       if (selectedInThePast != null) {
         List<RTransfer> selectedInThePastCpy = new ArrayList<>(selectedInThePast);
         Collections.reverse(selectedInThePastCpy);

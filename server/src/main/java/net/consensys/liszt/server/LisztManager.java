@@ -1,5 +1,6 @@
 package net.consensys.liszt.server;
 
+import java.util.List;
 import net.consensys.liszt.accountmanager.Account;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
@@ -47,4 +48,6 @@ public interface LisztManager {
    * @return Account corresponding to the latest rollup state.
    */
   Account getAccount(PublicKey owner);
+
+  List<Account> getLockAccounts();
 }

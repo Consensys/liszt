@@ -12,12 +12,15 @@ public class Account {
   public final BigInteger amount;
   public final int nonce;
   public final Hash hash;
+  public final boolean isLock;
 
-  protected Account(PublicKey publicKey, int id, BigInteger amount, int nonce, Hash hash) {
+  protected Account(
+      PublicKey publicKey, int id, BigInteger amount, int nonce, Hash hash, boolean isLock) {
     this.publicKey = publicKey;
     this.id = id;
     this.amount = amount;
     this.nonce = nonce;
     this.hash = hash;
+    this.isLock = isLock;
   }
 }

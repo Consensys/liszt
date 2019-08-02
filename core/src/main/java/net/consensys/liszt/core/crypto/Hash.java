@@ -1,13 +1,21 @@
 package net.consensys.liszt.core.crypto;
 
+import com.google.common.io.BaseEncoding;
 import java.util.Arrays;
 
 public class Hash {
 
   protected final byte[] hash;
+  public final String asHex;
 
   protected Hash(byte[] hash) {
     this.hash = hash;
+    asHex = BaseEncoding.base16().encode(hash);
+  }
+
+  protected Hash(String hex) {
+    this.hash = BaseEncoding.base16().decode(hex);
+    asHex = hex;
   }
 
   @Override

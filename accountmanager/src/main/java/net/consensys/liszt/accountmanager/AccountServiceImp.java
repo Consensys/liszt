@@ -4,17 +4,19 @@ import java.math.BigInteger;
 import java.util.*;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
+import net.consensys.liszt.core.crypto.HashUtil;
 import net.consensys.liszt.core.crypto.PublicKey;
 
 public class AccountServiceImp implements AccountService {
 
-  private final HashMap<Hash, LinkedHashMap<PublicKey, Account>> accountState;
+  private final AccountRepository accountRepository;
   private Hash lastAcceptedRootHash;
+  private List<Hash> lockedTransfers;
 
-  public AccountServiceImp(
-      HashMap<Hash, LinkedHashMap<PublicKey, Account>> accountState, Hash initialRootHash) {
-    this.accountState = accountState;
+  public AccountServiceImp(AccountRepository accountRepository, Hash initialRootHash) {
+    this.accountRepository = accountRepository;
     this.lastAcceptedRootHash = initialRootHash;
+    this.lockedTransfers = new ArrayList<>();
   }
 
   @Override
@@ -25,14 +27,13 @@ public class AccountServiceImp implements AccountService {
     // TODO conditions for cross rollup transfer
 
     return transfer.isSigned()
-        && accountState.get(fatherRootHash).get(transfer.to) != null
-        && accountState.get(fatherRootHash).get(transfer.from) != null;
+        && accountRepository.exists(fatherRootHash, HashUtil.hash(transfer.to.owner))
+        && accountRepository.exists(fatherRootHash, HashUtil.hash(transfer.from.owner));
   }
 
   @Override
   public List<RTransfer> updateIfAllTransfersValid(List<RTransfer> transfers, Hash fatherRootHash) {
-    LinkedHashMap<PublicKey, Account> tmpAccounts =
-        new LinkedHashMap<>(accountState.get(fatherRootHash));
+    AccountsState tmpAccounts = accountRepository.cloneAccountsState(fatherRootHash);
     List<RTransfer> notAcceptedTransfers = new ArrayList<>();
     for (RTransfer transfer : transfers) {
       boolean accepted;
@@ -48,8 +49,8 @@ public class AccountServiceImp implements AccountService {
 
     if (notAcceptedTransfers.isEmpty()) {
       Hash newRootHash = Accounts.calculateNewRootHash(tmpAccounts);
-      accountState.put(newRootHash, tmpAccounts);
       this.lastAcceptedRootHash = newRootHash;
+      accountRepository.saveNewAccountsState(newRootHash, tmpAccounts);
     }
     return notAcceptedTransfers;
   }
@@ -60,29 +61,44 @@ public class AccountServiceImp implements AccountService {
   }
 
   @Override
-  public Account getAccount(PublicKey owner, Hash rootHash) {
-    return accountState.get(rootHash).get(owner);
+  public Account getAccount(Hash rootHash, Hash owner) {
+    return accountRepository.get(rootHash, owner);
   }
 
-  private boolean innerRollupTransfer(
-      RTransfer transfer, LinkedHashMap<PublicKey, Account> tmpAccounts) {
-    Account fromAcc = tmpAccounts.get(transfer.from);
+  private boolean innerRollupTransfer(RTransfer transfer, AccountsState tmpAccounts) {
+    Account fromAcc = tmpAccounts.get(HashUtil.hash(transfer.from.owner));
 
     BigInteger newFromAccBalance = fromAcc.amount.subtract(transfer.amount);
     if (newFromAccBalance.compareTo(BigInteger.ZERO) == -1) {
       return false;
     }
-    Account toAcc = tmpAccounts.get(transfer.to);
+    Account toAcc = tmpAccounts.get(HashUtil.hash(transfer.to.owner));
     BigInteger newToAccBalance = toAcc.amount.add(transfer.amount);
     Account newFromAcc = Accounts.updateAccount(fromAcc, newFromAccBalance);
     Account newToAcc = Accounts.updateAccount(toAcc, newToAccBalance);
-    tmpAccounts.put(newFromAcc.publicKey, newFromAcc);
-    tmpAccounts.put(newToAcc.publicKey, newToAcc);
+    tmpAccounts.put(HashUtil.hash(newFromAcc.publicKey.owner), newFromAcc);
+    tmpAccounts.put(HashUtil.hash(newToAcc.publicKey.owner), newToAcc);
     return true;
   }
 
-  private boolean crossRollupTransfer(
-      RTransfer transfer, LinkedHashMap<PublicKey, Account> tmpAccounts) {
+  private boolean crossRollupTransfer(RTransfer transfer, AccountsState tmpAccounts) {
+    Account fromAcc = tmpAccounts.get(HashUtil.hash(transfer.from.owner));
+    BigInteger newFromAccBalance = fromAcc.amount.subtract(transfer.amount);
+    if (newFromAccBalance.compareTo(BigInteger.ZERO) == -1) {
+      return false;
+    }
+    Account newFromAcc = Accounts.updateAccount(fromAcc, newFromAccBalance);
+    Account lockedAcc =
+        Accounts.createLockAccount(new PublicKey(transfer.hash.asHex), 0, transfer.amount, 0);
+    tmpAccounts.put(HashUtil.hash(newFromAcc.publicKey.owner), newFromAcc);
+    tmpAccounts.put(transfer.hash, lockedAcc);
+    lockedTransfers.add(transfer.hash);
     return true;
+  }
+
+  public List<Account> getLockAccounts(Hash rootHash) {
+    List<Account> accs = new ArrayList<>();
+    lockedTransfers.forEach(h -> accs.add(getAccount(rootHash, h)));
+    return accs;
   }
 }

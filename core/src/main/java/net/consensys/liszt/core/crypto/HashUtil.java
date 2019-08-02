@@ -28,6 +28,10 @@ public class HashUtil {
     return new Hash(md.digest());
   }
 
+  public static Hash fromHex(String hex) {
+    return new Hash(hex);
+  }
+
   /**
    * Concatenate input hashes and return hash of the concatenation.
    *
