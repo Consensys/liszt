@@ -75,8 +75,6 @@ public class AccountServiceImp implements AccountService {
     Account toAcc = tmpAccounts.get(HashUtil.hash(transfer.to.owner));
     BigInteger newToAccBalance = toAcc.amount.add(transfer.amount);
     Account newFromAcc = Accounts.updateAccount(fromAcc, newFromAccBalance);
-    // TODO if newFromAcc is Lock account then check if transfer can be submitted (in the
-    // controller)
     Account newToAcc = Accounts.updateAccount(toAcc, newToAccBalance);
     tmpAccounts.put(HashUtil.hash(newFromAcc.publicKey.owner), newFromAcc);
     tmpAccounts.put(HashUtil.hash(newToAcc.publicKey.owner), newToAcc);
