@@ -36,6 +36,13 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     batchService = new BatchServiceImpl();
     proveService = new ProverServiceImp();
     blockchainService = new BlockchainServiceImp();
+    try {
+      blockchainService.startLocalNode();
+      blockchainService.deployContract();
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
     proveService.registerListener(this);
   }
 
@@ -62,6 +69,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     Hash newRootHash = accountService.getLastAcceptedRootHash();
     batchService.startNewBatch(lastRootHash, newRootHash, transfers);
     Batch batch = batchService.getBatchToProve();
+
     this.lastRootHash = newRootHash;
     proveService.proveBatch(batch);
     return true;
@@ -70,7 +78,11 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   @Override
   public synchronized void onNewProof(Proof proof) {
     Batch batch = batchService.getBatch(proof.rootHash);
-    blockchainService.submit(batch, proof);
+    try {
+      blockchainService.submit(batch, proof);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override

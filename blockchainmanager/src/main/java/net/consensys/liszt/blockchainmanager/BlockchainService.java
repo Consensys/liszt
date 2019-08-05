@@ -8,10 +8,19 @@ import net.consensys.liszt.core.crypto.Proof;
 public interface BlockchainService {
 
   /**
+   * Starts local ethereum client and dep
+   */
+  void startLocalNode() throws Exception;
+
+  /**
+   * Deploy liszt smart contract
+   */
+  void deployContract() throws Exception;
+  /**
    * Update smart contract with proof and corresponding data. It must be safe to call this method
    * multiple times with the same arguments.
    */
-  void submit(Batch batch, Proof proof);
+  void submit(Batch batch, Proof proof) throws Exception;
 
   /**
    * Check if a batch, identified by its roothash, has been included by the blokchain

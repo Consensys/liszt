@@ -9,7 +9,7 @@ public class ProverServiceImp implements ProverService {
 
   @Override
   public void proveBatch(Batch batch) {
-    Proof proof = new Proof(null);
+    Proof proof = new Proof(batch.rootHash);
     listener.onNewProof(proof);
   }
 
