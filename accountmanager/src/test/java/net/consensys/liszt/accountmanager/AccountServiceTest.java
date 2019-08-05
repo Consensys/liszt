@@ -75,11 +75,13 @@ public class AccountServiceTest {
 
   @Test
   public void crossRollupTransferShouldBeLocked() {
+    short ridFrom=1;
+    short ridTo=0;
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer1 =
-        new RTransfer(0, alice, kate, BigInteger.valueOf(20), 1, 0, new Signature());
+        new RTransfer(0, alice, kate, BigInteger.valueOf(20), ridFrom, ridTo, new Signature());
     RTransfer transfer2 =
-        new RTransfer(0, zac, kate, BigInteger.valueOf(30), 1, 0, new Signature());
+        new RTransfer(0, zac, kate, BigInteger.valueOf(30), ridFrom, ridTo, new Signature());
 
     transfers.add(transfer1);
     transfers.add(transfer2);
@@ -119,37 +121,44 @@ public class AccountServiceTest {
   }
 
   private List<RTransfer> innerRollupTransfers() {
+    short rid=0;
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer =
-        new RTransfer(0, alice, bob, BigInteger.valueOf(10), 0, 0, new Signature());
+        new RTransfer(0, alice, bob, BigInteger.valueOf(10), rid, rid, new Signature());
     transfers.add(transfer);
     return transfers;
   }
 
   private List<RTransfer> invalidBalanceInnerRollupTransfers() {
+    short rid=0;
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer =
-        new RTransfer(0, alice, bob, BigInteger.valueOf(1000), 0, 0, new Signature());
+        new RTransfer(0, alice, bob, BigInteger.valueOf(1000), rid, rid, new Signature());
 
     transfers.add(transfer);
     return transfers;
   }
 
   private List<RTransfer> invalidAccountInnerRollupTransfers() {
+    short rid=0;
+
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer =
-        new RTransfer(0, kate, bob, BigInteger.valueOf(1000), 0, 0, new Signature());
+        new RTransfer(0, kate, bob, BigInteger.valueOf(1000), rid, rid, new Signature());
 
     transfers.add(transfer);
     return transfers;
   }
 
   private List<RTransfer> crossRollupTransfers() {
+    short ridFrom=1;
+    short ridTo=0;
+
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer1 =
-        new RTransfer(0, alice, kate, BigInteger.valueOf(20), 1, 0, new Signature());
+        new RTransfer(0, alice, kate, BigInteger.valueOf(20), ridFrom, ridTo, new Signature());
     RTransfer transfer2 =
-        new RTransfer(0, zac, kate, BigInteger.valueOf(30), 1, 0, new Signature());
+        new RTransfer(0, zac, kate, BigInteger.valueOf(30), ridFrom, ridTo, new Signature());
 
     transfers.add(transfer1);
     transfers.add(transfer2);
