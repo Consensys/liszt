@@ -23,6 +23,18 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Install node
+          command: 'curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -'
+
+      - run:
+          name: Install npm
+          command: 'sudo apt-get install -y nodejs'
+
+      - run:
+          name: install ganache
+          command: 'sudo npm install -g ganache-cli'
+
       # Download and cache dependencies
       - restore_cache:
           keys:
