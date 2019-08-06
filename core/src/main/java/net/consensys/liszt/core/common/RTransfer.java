@@ -17,6 +17,7 @@ public class RTransfer {
   public final short rIdTo;
   public final Signature sig;
   public final Hash hash;
+  public final long timeout;
 
   public RTransfer(
       int nonce,
@@ -25,7 +26,9 @@ public class RTransfer {
       BigInteger amount,
       short rIdFrom,
       short rIdTo,
-      Signature sig) {
+      Signature sig,
+      long timeout) {
+    this.timeout = timeout;
     this.nonce = nonce;
     this.from = from;
     this.to = to;

@@ -15,6 +15,7 @@ public class TransferTestUtil {
         BigInteger.valueOf(1),
         rid,
         rid,
-        new Signature());
+        new Signature(),
+        100);
   }
 }

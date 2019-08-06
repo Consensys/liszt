@@ -17,8 +17,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import net.consensys.liszt.blockchainmanager.EthAccount;
 import net.consensys.liszt.blockchainmanager.Controller;
+import net.consensys.liszt.blockchainmanager.EthAccount;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -58,7 +58,6 @@ public class GanacheController implements Controller {
     // waits for keys.json for 10 second and then reads in keys.json from a file
     initKeys();
   }
-
 
   // Wait for keys.json file to be copied to the keysPath directory
   @SuppressWarnings({"unchecked", "DefaultCharset"})

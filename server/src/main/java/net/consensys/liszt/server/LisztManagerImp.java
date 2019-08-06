@@ -24,8 +24,10 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   private final ProverService proveService;
   private final BlockchainService blockchainService;
   private Hash lastRootHash;
+  private final short rollupId;
 
-  public LisztManagerImp() {
+  public LisztManagerImp(short rollupId) {
+    this.rollupId = rollupId;
     AccountStateProvider accountsStateProvider = new InMemoryAccountsStateProvider();
     Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState();
     this.lastRootHash = accountsStateProvider.lastAcceptedRootHash();
@@ -109,5 +111,9 @@ public class LisztManagerImp implements LisztManager, ProverListener {
 
   public synchronized List<Account> getLockAccounts() {
     return accountService.getLockAccounts(accountService.getLastAcceptedRootHash());
+  }
+
+  public synchronized long getLockDoneTimeout(Hash txHash) throws Exception {
+    return blockchainService.getLockedDone(rollupId, txHash);
   }
 }

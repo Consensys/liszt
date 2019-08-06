@@ -17,12 +17,14 @@ public class LisztManagerTest {
 
   @Before
   public void setUp() {
-    lisztManager = new LisztManagerImp();
+    short rid = 0;
+    lisztManager = new LisztManagerImp(rid);
   }
 
-  /*
+
+
   @Test
-  public void validTransfersShouldUpdateAccountBalance() {
+  public void validTransfersShouldUpdateAccountBalance() throws Exception {
     for (int i = 0; i < 10; i++) {
       boolean isValid =
           lisztManager.addTransfer(createMockTransferFromAliceToBob(i, BigInteger.valueOf(5)));
@@ -32,6 +34,11 @@ public class LisztManagerTest {
     Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(55));
     Account bobAcc = lisztManager.getAccount(bob);
     Assert.assertEquals(bobAcc.amount, BigInteger.valueOf(145));
+
+
+    RTransfer rTransfer = createMockTransferFromAliceToBob(3, BigInteger.valueOf(5));
+    long timeout = lisztManager.getLockDoneTimeout(rTransfer.hash);
+    Assert.assertEquals(timeout, 0);
   }
 
   @Test
@@ -53,10 +60,10 @@ public class LisztManagerTest {
     }
     Account aliceAcc = lisztManager.getAccount(alice);
     Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(55));
-  }*/
+  }
 
   @Test
-  public void crossRollupTransfersShouldBeLocked() {
+  public void crossRollupTransfersShouldBeLocked() throws Exception {
     for (int i = 0; i < 10; i++) {
       boolean isValid =
           lisztManager.addTransfer(createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5)));
@@ -74,18 +81,43 @@ public class LisztManagerTest {
       Assert.assertEquals(acc.publicKey.owner, rTransfer.hash.asHex);
     }
 
-    //TODO add test for LockDone in SC
+
+    RTransfer rTransfer = createMockXTransferFromAliceToBob(3, BigInteger.valueOf(5));
+    long timeout = lisztManager.getLockDoneTimeout(rTransfer.hash);
+    Assert.assertEquals(timeout, 100);
+
+  }
+
+  @Test
+  public void mixTransfers() throws Exception {
+    for (int i = 0; i < 10; i++) {
+      boolean isValid =
+          lisztManager.addTransfer(createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5)));
+      Assert.assertTrue(isValid);
+      isValid =
+          lisztManager.addTransfer(createMockTransferFromAliceToBob(i, BigInteger.valueOf(5)));
+      Assert.assertTrue(isValid);
+    }
+
+    Account aliceAcc = lisztManager.getAccount(alice);
+    Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(10));
+    Account bobAcc = lisztManager.getAccount(bob);
+    Assert.assertEquals(bobAcc.amount, BigInteger.valueOf(145));
+
+    RTransfer rTransfer = createMockXTransferFromAliceToBob(3, BigInteger.valueOf(5));
+    long timeout = lisztManager.getLockDoneTimeout(rTransfer.hash);
+    Assert.assertEquals(timeout, 100);
   }
 
   public RTransfer createMockTransferFromAliceToBob(int i, BigInteger amount) {
     short rid = 1;
-    return new RTransfer(i, alice, bob, amount, rid, rid, new Signature());
+    return new RTransfer(i, alice, bob, amount, rid, rid, new Signature(), 100);
   }
 
   public RTransfer createMockXTransferFromAliceToBob(int i, BigInteger amount) {
     short rid1 = 0;
     short rid2 = 1;
 
-    return new RTransfer(i, alice, bob, amount, rid1, rid2, new Signature());
+    return new RTransfer(i, alice, bob, amount, rid1, rid2, new Signature(), 100);
   }
 }

@@ -12,10 +12,8 @@
  */
 package net.consensys.liszt.blockchainmanager;
 
-
 import net.consensys.liszt.blockchainmanager.contract.LisztContract;
 
 public interface Deployer {
-    LisztContract deploySmartContract() throws Exception;
+  LisztContract deploySmartContract() throws Exception;
 }
-

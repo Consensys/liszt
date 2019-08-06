@@ -22,29 +22,25 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 public class LisztDeployer implements Deployer {
 
-    private final RemoteCall<LisztContract> liszt;
+  private final RemoteCall<LisztContract> liszt;
 
-    public LisztDeployer(String privateKey, String provider) {
-        Web3j web3j = Web3j.build(new HttpService(provider));
+  public LisztDeployer(String privateKey, String provider) {
+    Web3j web3j = Web3j.build(new HttpService(provider));
 
-        Credentials credentials = Credentials.create(privateKey);
+    Credentials credentials = Credentials.create(privateKey);
 
-        ContractGasProvider contractGasProvider = new DefaultGasProvider();
-        liszt = LisztContract.deploy(
-                web3j,
-                credentials,
-                contractGasProvider
-        );
+    ContractGasProvider contractGasProvider = new DefaultGasProvider();
+    liszt = LisztContract.deploy(web3j, credentials, contractGasProvider);
+  }
+
+  public LisztContract deploySmartContract() {
+    try {
+      liszt.send();
+      return liszt.send();
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.exit(0);
     }
-
-    public LisztContract deploySmartContract() {
-        try {
-            liszt.send();
-            return liszt.send();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-        return null;
-    }
+    return null;
+  }
 }
