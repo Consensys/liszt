@@ -21,8 +21,6 @@ public class LisztManagerTest {
     lisztManager = new LisztManagerImp(rid);
   }
 
-
-
   @Test
   public void validTransfersShouldUpdateAccountBalance() throws Exception {
     for (int i = 0; i < 10; i++) {
@@ -34,7 +32,6 @@ public class LisztManagerTest {
     Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(55));
     Account bobAcc = lisztManager.getAccount(bob);
     Assert.assertEquals(bobAcc.amount, BigInteger.valueOf(145));
-
 
     RTransfer rTransfer = createMockTransferFromAliceToBob(3, BigInteger.valueOf(5));
     long timeout = lisztManager.getLockDoneTimeout(rTransfer.hash);
@@ -81,11 +78,9 @@ public class LisztManagerTest {
       Assert.assertEquals(acc.publicKey.owner, rTransfer.hash.asHex);
     }
 
-
     RTransfer rTransfer = createMockXTransferFromAliceToBob(3, BigInteger.valueOf(5));
     long timeout = lisztManager.getLockDoneTimeout(rTransfer.hash);
     Assert.assertEquals(timeout, 100);
-
   }
 
   @Test
