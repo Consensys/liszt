@@ -13,19 +13,22 @@ public class RTransfer {
   public final PublicKey from;
   public final PublicKey to;
   public final BigInteger amount;
-  public final int rIdFrom;
-  public final int rIdTo;
+  public final short rIdFrom;
+  public final short rIdTo;
   public final Signature sig;
   public final Hash hash;
+  public final long timeout;
 
   public RTransfer(
       int nonce,
       PublicKey from,
       PublicKey to,
       BigInteger amount,
-      int rIdFrom,
-      int rIdTo,
-      Signature sig) {
+      short rIdFrom,
+      short rIdTo,
+      Signature sig,
+      long timeout) {
+    this.timeout = timeout;
     this.nonce = nonce;
     this.from = from;
     this.to = to;

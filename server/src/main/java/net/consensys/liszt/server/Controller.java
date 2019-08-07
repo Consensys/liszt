@@ -8,13 +8,12 @@ import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
 import net.consensys.liszt.server.dto.AcccountInfo;
 import net.consensys.liszt.server.dto.Transfer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class Controller {
 
-  @Autowired private LisztManager manager;
+  private static final LisztManager manager = new LisztManagerImp((short) 0);
 
   @GetMapping("/accounts/users/{owner}")
   public AcccountInfo accounts(@PathVariable String owner) {
@@ -49,7 +48,8 @@ public class Controller {
             transfer.amount,
             transfer.rIdFrom,
             transfer.rIdTo,
-            new Signature());
+            new Signature(),
+            100);
     manager.addTransfer(rTransfer);
     return rTransfer.hash.asHex;
   }

@@ -7,13 +7,15 @@ import net.consensys.liszt.core.crypto.Signature;
 
 public class TransferTestUtil {
   public static RTransfer createMockTransfer(int i) {
+    short rid = 1;
     return new RTransfer(
         i,
         new PublicKey("Test1"),
         new PublicKey("Test2"),
         BigInteger.valueOf(1),
-        1,
-        1,
-        new Signature());
+        rid,
+        rid,
+        new Signature(),
+        100);
   }
 }

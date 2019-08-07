@@ -7,8 +7,8 @@ public class Transfer {
   public String to;
   public BigInteger amount;
   public int nonce;
-  public int rIdFrom;
-  public int rIdTo;
+  public short rIdFrom;
+  public short rIdTo;
 
   public Transfer() {}
 }

@@ -24,8 +24,10 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   private final ProverService proveService;
   private final BlockchainService blockchainService;
   private Hash lastRootHash;
+  private final short rollupId;
 
-  public LisztManagerImp() {
+  public LisztManagerImp(short rollupId) {
+    this.rollupId = rollupId;
     AccountStateProvider accountsStateProvider = new InMemoryAccountsStateProvider();
     Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState();
     this.lastRootHash = accountsStateProvider.lastAcceptedRootHash();
@@ -36,6 +38,13 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     batchService = new BatchServiceImpl();
     proveService = new ProverServiceImp();
     blockchainService = new BlockchainServiceImp();
+    try {
+      blockchainService.startLocalNode();
+      // blockchainService.deployContract();
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
     proveService.registerListener(this);
   }
 
@@ -62,6 +71,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     Hash newRootHash = accountService.getLastAcceptedRootHash();
     batchService.startNewBatch(lastRootHash, newRootHash, transfers);
     Batch batch = batchService.getBatchToProve();
+
     this.lastRootHash = newRootHash;
     proveService.proveBatch(batch);
     return true;
@@ -70,7 +80,11 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   @Override
   public synchronized void onNewProof(Proof proof) {
     Batch batch = batchService.getBatch(proof.rootHash);
-    blockchainService.submit(batch, proof);
+    try {
+      blockchainService.submit(batch, proof);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -97,5 +111,9 @@ public class LisztManagerImp implements LisztManager, ProverListener {
 
   public synchronized List<Account> getLockAccounts() {
     return accountService.getLockAccounts(accountService.getLastAcceptedRootHash());
+  }
+
+  public synchronized long getLockDoneTimeout(Hash txHash) throws Exception {
+    return blockchainService.getLockedDone(rollupId, txHash);
   }
 }
