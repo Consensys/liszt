@@ -22,25 +22,38 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 public class LisztDeployer implements Deployer {
 
-  private final RemoteCall<LisztContract> liszt;
+  // private final RemoteCall<LisztContract> liszt;
+  private final Web3j web3j;
+  private final ContractGasProvider contractGasProvider;
 
-  public LisztDeployer(String privateKey, String provider) {
-    Web3j web3j = Web3j.build(new HttpService(provider));
-
-    Credentials credentials = Credentials.create(privateKey);
-
-    ContractGasProvider contractGasProvider = new DefaultGasProvider();
-    liszt = LisztContract.deploy(web3j, credentials, contractGasProvider);
+  public LisztDeployer(String provider) {
+    this.web3j = Web3j.build(new HttpService(provider));
+    this.contractGasProvider = new DefaultGasProvider();
   }
 
-  public LisztContract deploySmartContract() {
+  @Override
+  public void saveContractAddress() {}
+
+  public LisztContract deploySmartContract(String privateKey) {
     try {
-      liszt.send();
-      return liszt.send();
+      Credentials credentials = Credentials.create(privateKey);
+      RemoteCall<LisztContract> liszt =
+          LisztContract.deploy(web3j, credentials, contractGasProvider);
+      LisztContract lisztContract = liszt.send();
+      //   lisztContract.getContractAddress();
+      return lisztContract;
     } catch (Exception e) {
       e.printStackTrace();
-      System.exit(0);
+      System.exit(1);
     }
     return null;
+  }
+
+  @Override
+  public LisztContract loadSmartContract(String privateKey, String addr) {
+    Credentials credentials = Credentials.create(privateKey);
+
+    LisztContract lisztContract = LisztContract.load(addr, web3j, credentials, contractGasProvider);
+    return lisztContract;
   }
 }

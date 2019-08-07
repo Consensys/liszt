@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class LisztManagerTest {
-
   private PublicKey alice = new PublicKey("Alice");
   private PublicKey bob = new PublicKey("Bob");
   private LisztManager lisztManager;
@@ -112,7 +111,6 @@ public class LisztManagerTest {
   public RTransfer createMockXTransferFromAliceToBob(int i, BigInteger amount) {
     short rid1 = 0;
     short rid2 = 1;
-
     return new RTransfer(i, alice, bob, amount, rid1, rid2, new Signature(), 100);
   }
 }

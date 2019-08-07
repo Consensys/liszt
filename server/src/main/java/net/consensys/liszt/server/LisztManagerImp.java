@@ -40,7 +40,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     blockchainService = new BlockchainServiceImp();
     try {
       blockchainService.startLocalNode();
-      blockchainService.deployContract();
+      // blockchainService.deployContract();
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(1);

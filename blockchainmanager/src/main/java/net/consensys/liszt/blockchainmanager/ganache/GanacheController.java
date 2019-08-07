@@ -12,8 +12,9 @@
  */
 package net.consensys.liszt.blockchainmanager.ganache;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,8 @@ public class GanacheController implements Controller {
 
   final String keysPath =
       "/tmp/keys.json"; // System.getProperty("user.dir") + "/src/main/resources/keys.json";
+
+  final String contractAddrPath = "/tmp/addr.txt";
   private static final String ganache_cli = "ganache-cli";
 
   private static final String DEFAULT_HOST_NAME = "http://127.0.0.1";
@@ -37,10 +40,37 @@ public class GanacheController implements Controller {
 
   private List<EthAccount> accounts;
   private final String provider;
-  private final Process process;
+  private Process process;
+  private final int accountSize;
+  private final int balance;
 
   public GanacheController(int accountSize, int balance) throws Exception {
     provider = DEFAULT_HOST_NAME + ":" + DEFAULT_PORT;
+    this.accountSize = accountSize;
+    this.balance = balance;
+  }
+
+  @Override
+  public String getContractAddress() throws IOException {
+    List<String> addrLs = Files.readAllLines(Paths.get(contractAddrPath));
+    return addrLs.get(0);
+  }
+
+  @Override
+  public void saveContractAddress(String addr) throws FileNotFoundException {
+    try (PrintWriter out = new PrintWriter(contractAddrPath)) {
+      out.println(addr);
+    }
+  }
+
+  @Override
+  public boolean isLocalNodeStarted() {
+    File keyFile = new File(keysPath);
+    return keyFile.exists();
+  }
+
+  @Override
+  public void start() throws Exception {
     // starts a child process of ganache-cli and generates a keys.json file
     ProcessBuilder pb =
         new ProcessBuilder(
@@ -51,6 +81,7 @@ public class GanacheController implements Controller {
             "" + balance,
             KEY_PATH_PARAM,
             keysPath);
+
     process = pb.start();
 
     // register shut down hook
@@ -63,7 +94,6 @@ public class GanacheController implements Controller {
   @SuppressWarnings({"unchecked", "DefaultCharset"})
   private void initKeys() throws Exception {
     accounts = new ArrayList<EthAccount>();
-    JSONObject accountsJSON = null;
     File keyFile = new File(keysPath);
     int waitInterval = 0;
     while (waitInterval < 30) {
@@ -72,11 +102,6 @@ public class GanacheController implements Controller {
       waitInterval++;
       System.out.println(keysPath + waitInterval);
     }
-    JSONParser parser = new JSONParser();
-    accountsJSON =
-        (JSONObject) ((JSONObject) parser.parse(new FileReader(keysPath))).get("private_keys");
-    Set<String> keys = accountsJSON.keySet();
-    for (String key : keys) accounts.add(new EthAccount(key, accountsJSON.get(key).toString()));
   }
 
   public void shutDown() {
@@ -94,7 +119,17 @@ public class GanacheController implements Controller {
     }
   }
 
-  public List<EthAccount> accounts() {
+  public List<EthAccount> accounts() throws Exception {
+
+    List<EthAccount> accounts = new ArrayList<>();
+    JSONParser parser = new JSONParser();
+    JSONObject accountsJSON =
+        (JSONObject) ((JSONObject) parser.parse(new FileReader(keysPath))).get("private_keys");
+    Set<String> keys = accountsJSON.keySet();
+    for (String key : keys) {
+      accounts.add(new EthAccount(key, accountsJSON.get(key).toString()));
+    }
+
     return accounts;
   }
 
