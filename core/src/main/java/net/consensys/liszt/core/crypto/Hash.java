@@ -13,7 +13,7 @@ public class Hash {
     asHex = BaseEncoding.base16().encode(hash);
   }
 
-  protected Hash(String hex) {
+  public Hash(String hex) {
     this.hash = BaseEncoding.base16().decode(hex);
     asHex = hex;
   }

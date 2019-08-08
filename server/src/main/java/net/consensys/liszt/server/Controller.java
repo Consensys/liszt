@@ -2,6 +2,7 @@ package net.consensys.liszt.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import net.consensys.liszt.accountmanager.Account;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.PublicKey;
@@ -49,7 +50,8 @@ public class Controller {
             transfer.rIdFrom,
             transfer.rIdTo,
             new Signature(),
-            100);
+            100,
+            Optional.empty());
     manager.addTransfer(rTransfer);
     return rTransfer.hash.asHex;
   }

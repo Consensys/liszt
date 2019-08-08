@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tuples.generated.Tuple4;
 
 public class Liszt {
 
@@ -36,27 +37,20 @@ public class Liszt {
     return lisztContract.getContractAddress();
   }
 
-  /*
-  public void updateTransferDone(TransferComplete t) throws Exception {
-      lisztContract.updateTransferDone(t.from,
-              t.to,
-              t.amount,
-              t.other.from,
-              t.other.to,
-              t.other.amount,
-              BigInteger.valueOf(t.other.sourceRollupId),
-              BigInteger.valueOf(t.other.targetRollupId)
-      ).send();
+  public void updateTransferDone(RTransfer t) throws Exception {
+    lisztContract
+        .updateTransferDone(
+            BigInteger.valueOf(t.rIdFrom),
+            t.from.owner,
+            t.to.owner,
+            t.amount,
+            t.hashOfThePendingTransfer.get())
+        .send();
   }
 
-
-  public boolean transferDoneContains(XTransfer t) throws Exception {
-      return lisztContract.lockDoneContains(t.from,
-              t.to,
-              t.amount,
-              BigInteger.valueOf(t.sourceRollupId),
-              BigInteger.valueOf(t.targetRollupId)
-      ).send();
-  }*/
-
+  public TransferDone transferDone(short rollupId, Hash hash) throws Exception {
+    Tuple4<String, String, BigInteger, Boolean> done =
+        lisztContract.transferDone(BigInteger.valueOf(rollupId), hash.asHex).send();
+    return new TransferDone(done.getValue1(), done.getValue2(), done.getValue3());
+  }
 }

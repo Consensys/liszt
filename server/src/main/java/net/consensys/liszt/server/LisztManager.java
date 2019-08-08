@@ -2,6 +2,7 @@ package net.consensys.liszt.server;
 
 import java.util.List;
 import net.consensys.liszt.accountmanager.Account;
+import net.consensys.liszt.blockchainmanager.contract.TransferDone;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
@@ -49,7 +50,11 @@ public interface LisztManager {
    */
   Account getAccount(PublicKey owner);
 
+  Account getAccount(String owner);
+
   List<Account> getLockAccounts();
 
   long getLockDoneTimeout(Hash txHash) throws Exception;
+
+  TransferDone getTransferDone(short rollupId, Hash hash) throws Exception;
 }

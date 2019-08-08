@@ -79,9 +79,27 @@ public class AccountServiceTest {
     short ridTo = 0;
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer1 =
-        new RTransfer(0, alice, kate, BigInteger.valueOf(20), ridFrom, ridTo, new Signature(), 100);
+        new RTransfer(
+            0,
+            alice,
+            kate,
+            BigInteger.valueOf(20),
+            ridFrom,
+            ridTo,
+            new Signature(),
+            100,
+            Optional.empty());
     RTransfer transfer2 =
-        new RTransfer(0, zac, kate, BigInteger.valueOf(30), ridFrom, ridTo, new Signature(), 100);
+        new RTransfer(
+            0,
+            zac,
+            kate,
+            BigInteger.valueOf(30),
+            ridFrom,
+            ridTo,
+            new Signature(),
+            100,
+            Optional.empty());
 
     transfers.add(transfer1);
     transfers.add(transfer2);
@@ -124,7 +142,16 @@ public class AccountServiceTest {
     short rid = 0;
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer =
-        new RTransfer(0, alice, bob, BigInteger.valueOf(10), rid, rid, new Signature(), 100);
+        new RTransfer(
+            0,
+            alice,
+            bob,
+            BigInteger.valueOf(10),
+            rid,
+            rid,
+            new Signature(),
+            100,
+            Optional.empty());
     transfers.add(transfer);
     return transfers;
   }
@@ -133,7 +160,16 @@ public class AccountServiceTest {
     short rid = 0;
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer =
-        new RTransfer(0, alice, bob, BigInteger.valueOf(1000), rid, rid, new Signature(), 100);
+        new RTransfer(
+            0,
+            alice,
+            bob,
+            BigInteger.valueOf(1000),
+            rid,
+            rid,
+            new Signature(),
+            100,
+            Optional.empty());
 
     transfers.add(transfer);
     return transfers;
@@ -144,7 +180,16 @@ public class AccountServiceTest {
 
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer =
-        new RTransfer(0, kate, bob, BigInteger.valueOf(1000), rid, rid, new Signature(), 100);
+        new RTransfer(
+            0,
+            kate,
+            bob,
+            BigInteger.valueOf(1000),
+            rid,
+            rid,
+            new Signature(),
+            100,
+            Optional.empty());
 
     transfers.add(transfer);
     return transfers;

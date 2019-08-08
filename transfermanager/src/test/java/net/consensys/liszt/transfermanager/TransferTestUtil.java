@@ -1,6 +1,7 @@
 package net.consensys.liszt.transfermanager;
 
 import java.math.BigInteger;
+import java.util.Optional;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
@@ -16,6 +17,7 @@ public class TransferTestUtil {
         rid,
         rid,
         new Signature(),
-        100);
+        100,
+        Optional.empty());
   }
 }

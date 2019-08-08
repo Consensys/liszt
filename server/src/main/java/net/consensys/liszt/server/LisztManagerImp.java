@@ -3,6 +3,7 @@ package net.consensys.liszt.server;
 import java.util.*;
 import net.consensys.liszt.accountmanager.*;
 import net.consensys.liszt.blockchainmanager.*;
+import net.consensys.liszt.blockchainmanager.contract.TransferDone;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
@@ -104,16 +105,29 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     return rTransferState;
   }
 
+  @Override
   public synchronized Account getAccount(PublicKey owner) {
     return accountService.getAccount(
         accountService.getLastAcceptedRootHash(), HashUtil.hash(owner.owner));
   }
 
+  @Override
+  public synchronized Account getAccount(String owner) {
+    return accountService.getAccount(accountService.getLastAcceptedRootHash(), new Hash(owner));
+  }
+
+  @Override
   public synchronized List<Account> getLockAccounts() {
     return accountService.getLockAccounts(accountService.getLastAcceptedRootHash());
   }
 
+  @Override
   public synchronized long getLockDoneTimeout(Hash txHash) throws Exception {
     return blockchainService.getLockedDone(rollupId, txHash);
+  }
+
+  @Override
+  public synchronized TransferDone getTransferDone(short rollupId, Hash hash) throws Exception {
+    return blockchainService.getTransferDone(rollupId, hash);
   }
 }

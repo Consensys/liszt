@@ -16,16 +16,15 @@ contract LisztContract  {
         }
 
    struct transferComplete{
-          string from;
+          string recipient;
           string to;
           uint amount;
           bool exists;
-          transaction other;
    }
 
 
     mapping(uint8 =>mapping(string => uint)) lockDone;
-    mapping(bytes32 => transferComplete) transferDone;
+    mapping(uint8 => mapping(string => transferComplete)) public transferDone;
 
 
 
@@ -40,11 +39,12 @@ contract LisztContract  {
     }
 
 
-/*
-    function updateTransferDone(string memory from, string memory to, uint8 amount, string memory otherFrom, string memory otherTo, uint  otherAmount, uint8 otherSourceRollupId, uint8 otherTargetRollupId) public  {
 
+    function updateTransferDone(uint8 rollupId, string memory from, string memory to,  uint amount, string memory hash) public  {
+        transferDone[rollupId][hash] = transferComplete(from, to, amount, true);
     }
 
+/*
     function transferDoneContains(string memory otherFrom, string memory otherTo, uint  otherAmount, uint8 otherSourceRollupId, uint8 otherTargetRollupId, uint otherTimeout) public view returns (bool)  {
         transaction memory other = transaction(otherAmount,otherFrom, otherTo, true, otherSourceRollupId, otherTargetRollupId, otherTimeout);
         bytes32  hash = hashTransaction(other);
