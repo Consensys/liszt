@@ -30,5 +30,11 @@ public interface BlockchainService {
    */
   long getLockedDone(int rollupId, Hash txHash) throws Exception;
 
+  /**
+   * @param rollupId
+   * @param hash of the pending transfer
+   * @return TransferDone
+   * @throws Exception
+   */
   TransferDone getTransferDone(short rollupId, Hash hash) throws Exception;
 }

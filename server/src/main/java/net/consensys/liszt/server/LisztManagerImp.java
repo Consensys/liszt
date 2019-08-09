@@ -42,7 +42,6 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     blockchainService = new BlockchainServiceImp();
     try {
       blockchainService.startLocalNode();
-      // blockchainService.deployContract();
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(1);
@@ -57,29 +56,13 @@ public class LisztManagerImp implements LisztManager, ProverListener {
       return false;
     }
 
-    // if acc from locked
     List<Account> lockedAccounts = accountService.getLockAccounts(this.lastRootHash);
 
     Optional<Account> lockedAccount =
         lockedAccounts.stream().filter(a -> a.publicKey.equals(rtx.from)).findAny();
 
-    if (lockedAccount.isPresent()) {
-      TransferDone transferDone = null;
-      try {
-        transferDone =
-            blockchainService.getTransferDone(
-                otherRollupId, new Hash(rtx.hashOfThePendingTransfer.get()));
-        if (!(rtx.to.hash.asHex.equals(transferDone.from)
-            && rtx.amount.equals(transferDone.amount))) {
-          return false;
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-
-      if (transferDone == null) {
-        return false;
-      }
+    if (lockedAccount.isPresent() && !canBeUnlocked(rtx)) {
+      return false;
     }
 
     transferService.addTransfer(rtx);
@@ -151,8 +134,21 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     return blockchainService.getLockedDone(rollupId, txHash);
   }
 
-  @Override
-  public synchronized TransferDone getTransferDone(short rollupId, Hash hash) throws Exception {
-    return blockchainService.getTransferDone(rollupId, hash);
+  private boolean canBeUnlocked(RTransfer rtx) {
+    if (!rtx.hashOfThePendingTransfer.isPresent()) {
+      return false;
+    }
+    Hash hashOfThePendingTransfer = new Hash(rtx.hashOfThePendingTransfer.get());
+    try {
+      TransferDone transferDone =
+          blockchainService.getTransferDone(otherRollupId, hashOfThePendingTransfer);
+
+      return !(rtx.to.hash.asHex.equals(transferDone.from)
+          && rtx.amount.equals(transferDone.amount));
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
   }
 }

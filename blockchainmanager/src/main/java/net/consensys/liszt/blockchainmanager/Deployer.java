@@ -18,6 +18,4 @@ public interface Deployer {
   LisztContract deploySmartContract(String privateKey);
 
   LisztContract loadSmartContract(String privateKey, String addr);
-
-  void saveContractAddress();
 }
