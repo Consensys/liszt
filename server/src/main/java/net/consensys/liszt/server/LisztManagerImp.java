@@ -143,10 +143,11 @@ public class LisztManagerImp implements LisztManager, ProverListener {
       TransferDone transferDone =
           blockchainService.getTransferDone(otherRollupId, hashOfThePendingTransfer);
 
-      return !(rtx.to.hash.asHex.equals(transferDone.from)
+      return (rtx.to.hash.asHex.equals(transferDone.from)
           && rtx.amount.equals(transferDone.amount));
 
     } catch (Exception e) {
+
       e.printStackTrace();
       return false;
     }
