@@ -49,6 +49,12 @@ public interface LisztManager {
    */
   Account getAccount(PublicKey owner);
 
+  /**
+   * @param owner, hex encoded owner's public key
+   * @return Account corresponding to the latest rollup state.
+   */
+  Account getAccount(String owner);
+
   List<Account> getLockAccounts();
 
   long getLockDoneTimeout(Hash txHash) throws Exception;

@@ -57,7 +57,7 @@ public class Accounts {
     LinkedHashMap<Hash, Account> accounts = new LinkedHashMap<>();
     for (PublicKey pk : publicKeys) {
       Account account = Accounts.createAccount(pk, 0, BigInteger.valueOf(100), 0);
-      accounts.put(HashUtil.hash(pk.owner), account);
+      accounts.put(pk.hash, account);
     }
     return accounts;
   }

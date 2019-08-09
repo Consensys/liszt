@@ -2,6 +2,7 @@ package net.consensys.liszt.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import net.consensys.liszt.accountmanager.Account;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.PublicKey;
@@ -13,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class Controller {
 
-  private static final LisztManager manager = new LisztManagerImp((short) 0);
+  private static final LisztManager manager = new LisztManagerImp((short) 0, (short) 1);
 
   @GetMapping("/accounts/users/{owner}")
   public AcccountInfo accounts(@PathVariable String owner) {
     net.consensys.liszt.accountmanager.Account rollupAccount =
         manager.getAccount(new PublicKey(owner));
     return new AcccountInfo(
-        rollupAccount.publicKey.owner, rollupAccount.amount, rollupAccount.nonce);
+        rollupAccount.publicKey.hash.asHex, rollupAccount.amount, rollupAccount.nonce);
   }
 
   // http://localhost:8080/accounts/lock
@@ -30,7 +31,7 @@ public class Controller {
 
     List<AcccountInfo> accs = new ArrayList<>();
     for (Account a : rollupAccount) {
-      accs.add(new AcccountInfo(a.publicKey.owner, a.amount, a.nonce));
+      accs.add(new AcccountInfo(a.publicKey.hash.asHex, a.amount, a.nonce));
     }
     return accs;
   }
@@ -49,7 +50,8 @@ public class Controller {
             transfer.rIdFrom,
             transfer.rIdTo,
             new Signature(),
-            100);
+            100,
+            Optional.empty());
     manager.addTransfer(rTransfer);
     return rTransfer.hash.asHex;
   }

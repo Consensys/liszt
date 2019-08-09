@@ -1,7 +1,9 @@
 package net.consensys.liszt.blockchainmanager;
 
+import java.util.Optional;
 import net.consensys.liszt.blockchainmanager.contract.Liszt;
 import net.consensys.liszt.blockchainmanager.contract.LisztContract;
+import net.consensys.liszt.blockchainmanager.contract.TransferDone;
 import net.consensys.liszt.blockchainmanager.ganache.GanacheController;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
@@ -41,16 +43,20 @@ public class BlockchainServiceImp implements BlockchainService {
       if (t.rIdFrom != t.rIdTo) {
         liszt.updateLockDone(t);
       }
-    }
-  }
 
-  @Override
-  public byte[] checkInclusion(Hash rootHash) {
-    return new byte[0];
+      if (!t.hashOfThePendingTransfer.equals(Optional.empty())) {
+        liszt.updateTransferDone(t);
+      }
+    }
   }
 
   @Override
   public long getLockedDone(int rollupId, Hash txHash) throws Exception {
     return liszt.lockDoneTimeout(rollupId, txHash);
+  }
+
+  @Override
+  public TransferDone getTransferDone(short rollupId, Hash hash) throws Exception {
+    return liszt.transferDone(rollupId, hash);
   }
 }

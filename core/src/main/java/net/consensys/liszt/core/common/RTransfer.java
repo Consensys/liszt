@@ -2,6 +2,7 @@ package net.consensys.liszt.core.common;
 
 import java.math.BigInteger;
 import java.util.Objects;
+import java.util.Optional;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.HashUtil;
 import net.consensys.liszt.core.crypto.PublicKey;
@@ -18,6 +19,7 @@ public class RTransfer {
   public final Signature sig;
   public final Hash hash;
   public final long timeout;
+  public final Optional<String> hashOfThePendingTransfer;
 
   public RTransfer(
       int nonce,
@@ -27,7 +29,8 @@ public class RTransfer {
       short rIdFrom,
       short rIdTo,
       Signature sig,
-      long timeout) {
+      long timeout,
+      Optional<String> hashOfThePendingTransfer) {
     this.timeout = timeout;
     this.nonce = nonce;
     this.from = from;
@@ -36,6 +39,7 @@ public class RTransfer {
     this.rIdFrom = rIdFrom;
     this.rIdTo = rIdTo;
     this.sig = sig;
+    this.hashOfThePendingTransfer = hashOfThePendingTransfer;
     this.hash =
         HashUtil.hash(
             String.valueOf(nonce),

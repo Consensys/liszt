@@ -3,10 +3,10 @@ package net.consensys.liszt.server;
 import java.util.*;
 import net.consensys.liszt.accountmanager.*;
 import net.consensys.liszt.blockchainmanager.*;
+import net.consensys.liszt.blockchainmanager.contract.TransferDone;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
-import net.consensys.liszt.core.crypto.HashUtil;
 import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.provermanager.ProverListener;
@@ -25,9 +25,11 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   private final BlockchainService blockchainService;
   private Hash lastRootHash;
   private final short rollupId;
+  private final short otherRollupId;
 
-  public LisztManagerImp(short rollupId) {
+  public LisztManagerImp(short rollupId, short otherRollupId) {
     this.rollupId = rollupId;
+    this.otherRollupId = otherRollupId;
     AccountStateProvider accountsStateProvider = new InMemoryAccountsStateProvider();
     Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState();
     this.lastRootHash = accountsStateProvider.lastAcceptedRootHash();
@@ -40,7 +42,6 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     blockchainService = new BlockchainServiceImp();
     try {
       blockchainService.startLocalNode();
-      // blockchainService.deployContract();
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(1);
@@ -52,6 +53,15 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   public synchronized boolean addTransfer(RTransfer rtx) {
 
     if (!accountService.checkBasicValidity(rtx, this.lastRootHash)) {
+      return false;
+    }
+
+    List<Account> lockedAccounts = accountService.getLockAccounts(this.lastRootHash);
+
+    Optional<Account> lockedAccount =
+        lockedAccounts.stream().filter(a -> a.publicKey.equals(rtx.from)).findAny();
+
+    if (lockedAccount.isPresent() && !canBeUnlocked(rtx)) {
       return false;
     }
 
@@ -104,16 +114,42 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     return rTransferState;
   }
 
+  @Override
   public synchronized Account getAccount(PublicKey owner) {
-    return accountService.getAccount(
-        accountService.getLastAcceptedRootHash(), HashUtil.hash(owner.owner));
+    return accountService.getAccount(accountService.getLastAcceptedRootHash(), owner.hash);
   }
 
+  @Override
+  public synchronized Account getAccount(String owner) {
+    return accountService.getAccount(accountService.getLastAcceptedRootHash(), new Hash(owner));
+  }
+
+  @Override
   public synchronized List<Account> getLockAccounts() {
     return accountService.getLockAccounts(accountService.getLastAcceptedRootHash());
   }
 
+  @Override
   public synchronized long getLockDoneTimeout(Hash txHash) throws Exception {
     return blockchainService.getLockedDone(rollupId, txHash);
+  }
+
+  private boolean canBeUnlocked(RTransfer rtx) {
+    if (!rtx.hashOfThePendingTransfer.isPresent()) {
+      return false;
+    }
+    Hash hashOfThePendingTransfer = new Hash(rtx.hashOfThePendingTransfer.get());
+    try {
+      TransferDone transferDone =
+          blockchainService.getTransferDone(otherRollupId, hashOfThePendingTransfer);
+
+      return (rtx.to.hash.asHex.equals(transferDone.from)
+          && rtx.amount.equals(transferDone.amount));
+
+    } catch (Exception e) {
+
+      e.printStackTrace();
+      return false;
+    }
   }
 }

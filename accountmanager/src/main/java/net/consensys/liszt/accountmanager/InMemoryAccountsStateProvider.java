@@ -20,7 +20,12 @@ public class InMemoryAccountsStateProvider implements AccountStateProvider {
     PublicKey alice = new PublicKey("Alice");
     PublicKey bob = new PublicKey("Bob");
     PublicKey zac = new PublicKey("Zac");
-    List<PublicKey> publicKeys = Arrays.asList(new PublicKey[] {alice, bob, zac});
+    PublicKey carol = new PublicKey("Carol");
+    PublicKey adam = new PublicKey("Adam");
+    PublicKey greg = new PublicKey("Greg");
+
+    List<PublicKey> publicKeys =
+        Arrays.asList(new PublicKey[] {alice, bob, zac, carol, adam, greg});
     LinkedHashMap<Hash, Account> accounts = Accounts.accounts(publicKeys);
     return new AccountsState(accounts);
   }

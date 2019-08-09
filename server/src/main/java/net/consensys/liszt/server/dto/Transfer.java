@@ -9,6 +9,7 @@ public class Transfer {
   public int nonce;
   public short rIdFrom;
   public short rIdTo;
+  public String hashOfThePendingTransfer;
 
   public Transfer() {}
 }

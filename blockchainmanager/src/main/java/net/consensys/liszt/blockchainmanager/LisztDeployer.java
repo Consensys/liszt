@@ -31,9 +31,6 @@ public class LisztDeployer implements Deployer {
     this.contractGasProvider = new DefaultGasProvider();
   }
 
-  @Override
-  public void saveContractAddress() {}
-
   public LisztContract deploySmartContract(String privateKey) {
     try {
       Credentials credentials = Credentials.create(privateKey);
