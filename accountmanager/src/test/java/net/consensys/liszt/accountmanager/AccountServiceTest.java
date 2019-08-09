@@ -6,7 +6,6 @@ import java.math.BigInteger;
 import java.util.*;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
-import net.consensys.liszt.core.crypto.HashUtil;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
 import org.junit.Before;
@@ -39,18 +38,14 @@ public class AccountServiceTest {
     assertTrue(invalidTransfers.isEmpty());
     Hash updatedRootHash = accountService.getLastAcceptedRootHash();
 
-    BigInteger aliceAmount =
-        accountService.getAccount(updatedRootHash, HashUtil.hash(alice.owner)).amount;
-    BigInteger bobAmount =
-        accountService.getAccount(updatedRootHash, HashUtil.hash(bob.owner)).amount;
+    BigInteger aliceAmount = accountService.getAccount(updatedRootHash, alice.hash).amount;
+    BigInteger bobAmount = accountService.getAccount(updatedRootHash, bob.hash).amount;
     assertEquals(aliceAmount, BigInteger.valueOf(90));
     assertEquals(bobAmount, BigInteger.valueOf(110));
 
     // Test rollback
-    BigInteger initialAliceAmount =
-        accountService.getAccount(initialRootHash, HashUtil.hash(alice.owner)).amount;
-    BigInteger initialBobAmount =
-        accountService.getAccount(initialRootHash, HashUtil.hash(bob.owner)).amount;
+    BigInteger initialAliceAmount = accountService.getAccount(initialRootHash, alice.hash).amount;
+    BigInteger initialBobAmount = accountService.getAccount(initialRootHash, bob.hash).amount;
 
     assertEquals(initialAliceAmount, BigInteger.valueOf(100));
     assertEquals(initialBobAmount, BigInteger.valueOf(100));
@@ -64,10 +59,8 @@ public class AccountServiceTest {
     assertFalse(invalidTransfers.isEmpty());
     Hash updatedRootHash = accountService.getLastAcceptedRootHash();
 
-    BigInteger aliceAmount =
-        accountService.getAccount(updatedRootHash, HashUtil.hash(alice.owner)).amount;
-    BigInteger bobAmount =
-        accountService.getAccount(updatedRootHash, HashUtil.hash(bob.owner)).amount;
+    BigInteger aliceAmount = accountService.getAccount(updatedRootHash, alice.hash).amount;
+    BigInteger bobAmount = accountService.getAccount(updatedRootHash, bob.hash).amount;
 
     assertEquals(aliceAmount, BigInteger.valueOf(100));
     assertEquals(bobAmount, BigInteger.valueOf(100));
@@ -106,10 +99,8 @@ public class AccountServiceTest {
 
     accountService.updateIfAllTransfersValid(transfers, initialRootHash);
     Hash updatedRootHash = accountService.getLastAcceptedRootHash();
-    BigInteger aliceAmount =
-        accountService.getAccount(updatedRootHash, HashUtil.hash(alice.owner)).amount;
-    BigInteger zacAmount =
-        accountService.getAccount(updatedRootHash, HashUtil.hash(zac.owner)).amount;
+    BigInteger aliceAmount = accountService.getAccount(updatedRootHash, alice.hash).amount;
+    BigInteger zacAmount = accountService.getAccount(updatedRootHash, zac.hash).amount;
 
     assertEquals(aliceAmount, BigInteger.valueOf(80));
     assertEquals(zacAmount, BigInteger.valueOf(70));

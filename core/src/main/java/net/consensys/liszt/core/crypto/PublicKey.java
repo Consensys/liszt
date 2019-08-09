@@ -3,15 +3,16 @@ package net.consensys.liszt.core.crypto;
 import java.util.Objects;
 
 public class PublicKey {
-  public final String owner;
+  private String owner;
+  public final Hash hash;
 
   public PublicKey(String owner) {
     this.owner = owner;
+    this.hash = HashUtil.hash(owner);
   }
 
-  @Override
-  public String toString() {
-    return owner;
+  public PublicKey(Hash hash) {
+    this.hash = hash;
   }
 
   @Override
@@ -19,11 +20,11 @@ public class PublicKey {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     PublicKey publicKey = (PublicKey) o;
-    return Objects.equals(owner, publicKey.owner);
+    return Objects.equals(hash, publicKey.hash);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(owner);
+    return Objects.hash(hash);
   }
 }

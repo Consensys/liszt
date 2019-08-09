@@ -17,8 +17,8 @@ public class Liszt {
   public TransactionReceipt updateLockDone(RTransfer t) throws Exception {
     return lisztContract
         .updateLockDone(
-            t.from.owner,
-            t.to.owner,
+            t.from.hash.asHex, // TODO
+            t.to.hash.asHex,
             t.amount,
             BigInteger.valueOf(t.rIdFrom),
             BigInteger.valueOf(t.rIdTo),
@@ -41,8 +41,8 @@ public class Liszt {
     lisztContract
         .updateTransferDone(
             BigInteger.valueOf(t.rIdFrom),
-            t.from.owner,
-            t.to.owner,
+            t.from.hash.asHex, // TODO
+            t.to.hash.asHex,
             t.amount,
             t.hashOfThePendingTransfer.get())
         .send();
