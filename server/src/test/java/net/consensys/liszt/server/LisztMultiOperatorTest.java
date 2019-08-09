@@ -24,26 +24,31 @@ public class LisztMultiOperatorTest {
     lisztManager1 = new LisztManagerImp(rid1, rid2);
     Thread.sleep(2000);
     lisztManager2 = new LisztManagerImp(rid2, rid1);
+    addXTransfers();
   }
 
   @Test
-  public void operatorsUpdateLockDone() throws Exception {
-    for (int i = 0; i < 3; i++) {
-      boolean isValid =
-          lisztManager1.addTransfer(
-              TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5)));
-      Assert.assertTrue(isValid);
-    }
-    Account aliceAcc = lisztManager1.getAccount(TestUtils.alice);
-    Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(85));
-    Account bobAcc = lisztManager1.getAccount(TestUtils.bob);
-    Assert.assertEquals(bobAcc.amount, BigInteger.valueOf(100));
+  public void balanceUpdate(){
+    Account aliceAcc01 = lisztManager1.getAccount(TestUtils.alice);
+    Assert.assertEquals(aliceAcc01.amount, BigInteger.valueOf(85));
+    Account bobAcc01 = lisztManager1.getAccount(TestUtils.bob);
+    Assert.assertEquals(bobAcc01.amount, BigInteger.valueOf(100));
+
+
+    Account aliceAcc02 = lisztManager2.getAccount(TestUtils.alice);
+    Assert.assertEquals(aliceAcc02.amount, BigInteger.valueOf(100));
+    Account bobAcc02 = lisztManager2.getAccount(TestUtils.bob);
+    Assert.assertEquals(bobAcc02.amount, BigInteger.valueOf(100));
+  }
+
+  @Test
+  public void lockedAccounts() throws Exception {
 
     for (int i = 0; i < lisztManager1.getLockAccounts().size(); i++) {
-      Account acc = lisztManager1.getLockAccounts().get(i);
-      Assert.assertEquals(acc.amount, BigInteger.valueOf(5));
+      Account lockedAcc = lisztManager1.getLockAccounts().get(i);
+      Assert.assertEquals(lockedAcc.amount, BigInteger.valueOf(5));
       RTransfer rTransfer = TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5));
-      Assert.assertEquals(acc.publicKey.hash, rTransfer.hash);
+      Assert.assertEquals(lockedAcc.publicKey.hash, rTransfer.hash);
     }
 
     RTransfer rTransfer = TestUtils.createMockXTransferFromAliceToBob(1, BigInteger.valueOf(5));
@@ -55,8 +60,14 @@ public class LisztMultiOperatorTest {
 
     Account lockedAcc = lisztManager1.getAccount(rTransfer.hash.asHex);
     Assert.assertEquals(lockedAcc.amount, BigInteger.valueOf(5));
+  }
 
-    RTransfer complete =
+
+  @Test
+  public void transferDone() throws Exception {
+    RTransfer rTransfer = TestUtils.createMockXTransferFromAliceToBob(1, BigInteger.valueOf(5));
+
+    RTransfer done =
         new RTransfer(
             3,
             TestUtils.zac,
@@ -68,10 +79,11 @@ public class LisztMultiOperatorTest {
             100,
             Optional.of(rTransfer.hash.asHex));
 
-    boolean isValid = lisztManager2.addTransfer(complete);
+    boolean isValid = lisztManager2.addTransfer(done);
 
     Assert.assertTrue(isValid);
 
+    // add transfers to create new Batch
     for (int i = 0; i < 3; i++) {
       isValid =
           lisztManager2.addTransfer(
@@ -79,20 +91,22 @@ public class LisztMultiOperatorTest {
       Assert.assertTrue(isValid);
     }
 
-    Account rtAcc = lisztManager1.getAccount(complete.hashOfThePendingTransfer.get());
-    Assert.assertEquals(rtAcc.amount, BigInteger.valueOf(5));
+
+    Optional<String> hashOfThePendingTransfer = done.hashOfThePendingTransfer;
+    Account lockedAccount = lisztManager1.getAccount(hashOfThePendingTransfer.get());
+    Assert.assertEquals(lockedAccount.amount, BigInteger.valueOf(5));
 
     RTransfer unlock =
         new RTransfer(
             0,
-            new PublicKey(new Hash(complete.hashOfThePendingTransfer.get())),
+            new PublicKey(new Hash(hashOfThePendingTransfer.get())),
             TestUtils.zac,
             BigInteger.valueOf(5),
             (short) 0,
             (short) 0,
             new Signature(),
             0,
-            complete.hashOfThePendingTransfer);
+                hashOfThePendingTransfer);
 
     isValid = lisztManager1.addTransfer(unlock);
     Assert.assertTrue(isValid);
@@ -107,7 +121,17 @@ public class LisztMultiOperatorTest {
     Account zacAcc = lisztManager1.getAccount(TestUtils.zac);
     Assert.assertEquals(zacAcc.amount, BigInteger.valueOf(105));
 
-    lockedAcc = lisztManager1.getAccount(rTransfer.hash.asHex);
+    Account lockedAcc = lisztManager1.getAccount(rTransfer.hash.asHex);
     Assert.assertEquals(lockedAcc.amount, BigInteger.valueOf(0));
+  }
+
+
+  public void addXTransfers(){
+    for (int i = 0; i < 3; i++) {
+      boolean isValid =
+              lisztManager1.addTransfer(
+                      TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5)));
+      Assert.assertTrue(isValid);
+    }
   }
 }

@@ -11,6 +11,8 @@ public class TestUtils {
   static PublicKey alice = new PublicKey("Alice");
   static PublicKey bob = new PublicKey("Bob");
   static PublicKey zac = new PublicKey("Zac");
+  static PublicKey adam = new PublicKey("Adam");
+
 
   static RTransfer createMockTransferFromAliceToBob(int i, BigInteger amount) {
     short rid = 0;
