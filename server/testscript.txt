@@ -3,4 +3,23 @@ gradle shadowJar
 java --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -Xms6000m -Xmx12048m -classpath server/build/libs/liszt-ws.jar net.consensys.liszt.server.Start
 
 
-curl -X POST localhost:8080/transfers -H 'Content-type:application/json' -d '{"from":"Alice","to": "Bob","amount": "11", "nonce":"0", "rIdFrom":"0", "rIdTo":"1"}'
+curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"Alice","to": "Bob","amount": "11", "nonce":"0", "rIdFrom":"0", "rIdTo":"0"}'
+
+curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"Alice","to": "Bob","amount": "20", "nonce":"0", "rIdFrom":"0", "rIdTo":"0"}'
+
+curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"Alice","to": "Bob","amount": "30", "nonce":"0", "rIdFrom":"0", "rIdTo":"0"}'
+
+http://localhost:4567/accounts/users/Alice
+http://localhost:4567/accounts/users/Bob
+
+==== x-rollup
+
+curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"Alice","to": "Bob","amount": "11", "nonce":"0", "rIdFrom":"0", "rIdTo":"1"}'
+
+curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"Alice","to": "Bob","amount": "20", "nonce":"0", "rIdFrom":"0", "rIdTo":"1"}'
+
+curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"Alice","to": "Bob","amount": "30", "nonce":"0", "rIdFrom":"0", "rIdTo":"1"}'
+
+http://localhost:4567/accounts/users/Alice
+http://localhost:4567/accounts/users/Bob
+http://localhost:4567/accounts/lock

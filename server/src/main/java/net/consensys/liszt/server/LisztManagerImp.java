@@ -13,9 +13,7 @@ import net.consensys.liszt.provermanager.ProverListener;
 import net.consensys.liszt.provermanager.ProverService;
 import net.consensys.liszt.provermanager.ProverServiceImp;
 import net.consensys.liszt.transfermanager.*;
-import org.springframework.stereotype.Service;
 
-@Service
 public class LisztManagerImp implements LisztManager, ProverListener {
 
   private final TransferService transferService;
