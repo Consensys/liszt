@@ -13,8 +13,12 @@ import net.consensys.liszt.provermanager.ProverListener;
 import net.consensys.liszt.provermanager.ProverService;
 import net.consensys.liszt.provermanager.ProverServiceImp;
 import net.consensys.liszt.transfermanager.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class LisztManagerImp implements LisztManager, ProverListener {
+
+  private static final Logger logger = LogManager.getLogger("Liszt");
 
   private final TransferService transferService;
   private final AccountService accountService;
@@ -51,6 +55,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   public synchronized boolean addTransfer(RTransfer rtx) {
 
     if (!accountService.checkBasicValidity(rtx, this.lastRootHash)) {
+      logger.info("Transaction is invalid");
       return false;
     }
 
@@ -79,17 +84,22 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     Hash newRootHash = accountService.getLastAcceptedRootHash();
     batchService.startNewBatch(lastRootHash, newRootHash, transfers);
     Batch batch = batchService.getBatchToProve();
+    logger.info("Last root hash updated " + lastRootHash.asHex + " -> " + newRootHash.asHex);
 
     this.lastRootHash = newRootHash;
+
     proveService.proveBatch(batch);
     return true;
   }
 
   @Override
   public synchronized void onNewProof(Proof proof) {
+    logger.info("New proof generated ");
+
     Batch batch = batchService.getBatch(proof.rootHash);
     try {
       blockchainService.submit(batch, proof);
+      logger.info("New batch submitted ");
     } catch (Exception e) {
       e.printStackTrace();
     }

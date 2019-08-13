@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Set;
 import net.consensys.liszt.blockchainmanager.Controller;
 import net.consensys.liszt.blockchainmanager.EthAccount;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -43,6 +45,7 @@ public class GanacheController implements Controller {
   private Process process;
   private final int accountSize;
   private final int balance;
+  private static final Logger logger = LogManager.getLogger("Liszt");
 
   public GanacheController(int accountSize, int balance) throws Exception {
     provider = DEFAULT_HOST_NAME + ":" + DEFAULT_PORT;
@@ -71,6 +74,7 @@ public class GanacheController implements Controller {
 
   @Override
   public void start() throws Exception {
+    logger.info("Starting ganache");
     // starts a child process of ganache-cli and generates a keys.json file
     ProcessBuilder pb =
         new ProcessBuilder(
@@ -100,7 +104,7 @@ public class GanacheController implements Controller {
       if (keyFile.exists()) break;
       Thread.sleep(500);
       waitInterval++;
-      System.out.println(keysPath + waitInterval);
+      logger.info("Waiting for ETH private keyss to be generated");
     }
   }
 

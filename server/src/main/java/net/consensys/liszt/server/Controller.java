@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import net.consensys.liszt.accountmanager.Account;
 import net.consensys.liszt.core.common.RTransfer;
+import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
 import net.consensys.liszt.server.dto.AcccountInfo;
@@ -15,9 +16,11 @@ import net.consensys.liszt.server.dto.Transfer;
 
 public class Controller {
 
-  private static final LisztManager manager = new LisztManagerImp((short) 0, (short) 1);
+  private final LisztManager manager;
 
-  public Controller() {
+  public Controller(short rollup0, short rollup1) {
+
+    manager = new LisztManagerImp(rollup0, rollup1);
     get(
         "/accounts/users/:owner",
         (req, res) -> {
@@ -43,22 +46,38 @@ public class Controller {
           return new Gson().toJson(accs);
         });
 
+    get(
+        "/accounts/lock/:owner",
+        (req, res) -> {
+          net.consensys.liszt.accountmanager.Account rollupAccount =
+              manager.getAccount(new PublicKey(new Hash(req.params(":owner"))));
+          return new Gson()
+              .toJson(
+                  new AcccountInfo(
+                      rollupAccount.publicKey.hash.asHex,
+                      rollupAccount.amount,
+                      rollupAccount.nonce));
+        });
+
     post(
         "/transfers",
         (request, response) -> {
           response.type("application/json");
 
           Transfer transfer = new Gson().fromJson(request.body(), Transfer.class);
-
+          PublicKey from = new PublicKey(transfer.from);
           Optional<String> hashOfThePendingTransfer = Optional.empty();
           if (transfer.hashOfThePendingTransfer != null) {
             hashOfThePendingTransfer = Optional.of(transfer.hashOfThePendingTransfer);
+            if (transfer.hashOfThePendingTransfer.equals(transfer.from)) {
+              from = new PublicKey(new Hash(transfer.from));
+            }
           }
 
           RTransfer rTransfer =
               new RTransfer(
                   transfer.nonce,
-                  new PublicKey(transfer.from),
+                  from,
                   new PublicKey(transfer.to),
                   transfer.amount,
                   transfer.rIdFrom,
@@ -66,8 +85,8 @@ public class Controller {
                   new Signature(),
                   100,
                   hashOfThePendingTransfer);
-          manager.addTransfer(rTransfer);
-          return new Gson().toJson(rTransfer.hash.asHex);
+          boolean isValid = manager.addTransfer(rTransfer);
+          return new Gson().toJson(new Response(rTransfer.hash.asHex, isValid));
         });
   }
 }

@@ -5,12 +5,15 @@ import java.util.*;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.PublicKey;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class AccountServiceImp implements AccountService {
 
   private final AccountRepository accountRepository;
   private Hash lastAcceptedRootHash;
   private List<Hash> lockedTransfers;
+  private static final Logger logger = LogManager.getLogger("Liszt");
 
   public AccountServiceImp(AccountRepository accountRepository, Hash initialRootHash) {
     this.accountRepository = accountRepository;
@@ -20,14 +23,34 @@ public class AccountServiceImp implements AccountService {
 
   @Override
   public boolean checkBasicValidity(RTransfer transfer, Hash fatherRootHash) {
-    // For inner rollup transfers, transfer is valid if:
+    // inner rollup transfers, transfer is valid if:
     // 1) Signature valid
     // 2) "from", and "to" accounts exist is in the rolluo.
     // TODO conditions for cross rollup transfer
 
-    return transfer.isSigned()
-        && accountRepository.exists(fatherRootHash, transfer.to.hash)
-        && accountRepository.exists(fatherRootHash, transfer.from.hash);
+    boolean idSigned = transfer.isSigned();
+    boolean senderExist = accountRepository.exists(fatherRootHash, transfer.from.hash);
+    boolean recipientExist = accountRepository.exists(fatherRootHash, transfer.to.hash);
+
+    boolean ok = idSigned && senderExist && recipientExist;
+    if (!ok) {
+      logger.info(
+          "Transfer is invalid "
+              + transfer.hash.asHex
+              + " isSigned "
+              + idSigned
+              + " senderExist "
+              + senderExist
+              + " "
+              + transfer.from
+              + " recipientExist "
+              + recipientExist
+              + " "
+              + transfer.to);
+
+      // accountRepository.get(fatherRootHash)
+    }
+    return ok;
   }
 
   @Override
@@ -77,6 +100,13 @@ public class AccountServiceImp implements AccountService {
     Account newToAcc = Accounts.updateAccount(toAcc, newToAccBalance);
     tmpAccounts.put(newFromAcc.publicKey.hash, newFromAcc);
     tmpAccounts.put(newToAcc.publicKey.hash, newToAcc);
+    logger.info(
+        "Accounts updated for transfer "
+            + fromAcc.publicKey.hash.asHex
+            + " -> "
+            + toAcc.publicKey.hash.asHex
+            + " amount "
+            + transfer.amount);
     return true;
   }
 
@@ -92,6 +122,7 @@ public class AccountServiceImp implements AccountService {
     tmpAccounts.put(newFromAcc.publicKey.hash, newFromAcc);
     tmpAccounts.put(transfer.hash, lockedAcc);
     lockedTransfers.add(transfer.hash);
+    logger.info("X rollup transfer locked " + lockedAcc.publicKey.hash.asHex);
     return true;
   }
 

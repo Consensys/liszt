@@ -27,4 +27,9 @@ public class PublicKey {
   public int hashCode() {
     return Objects.hash(hash);
   }
+
+  @Override
+  public String toString() {
+    return "PublicKey{" + "owner='" + owner + '\'' + ", hash=" + hash.asHex + '}';
+  }
 }
