@@ -102,9 +102,11 @@ public class AccountServiceImp implements AccountService {
     tmpAccounts.put(newToAcc.publicKey.hash, newToAcc);
     logger.info(
         "Accounts updated for transfer "
-            + fromAcc.publicKey.hash.asHex
+            + fromAcc.publicKey.hash.asHex.substring(0, 10)
+            + "..."
             + " -> "
-            + toAcc.publicKey.hash.asHex
+            + toAcc.publicKey.hash.asHex.substring(0, 10)
+            + "..."
             + " amount "
             + transfer.amount);
     return true;
@@ -122,7 +124,8 @@ public class AccountServiceImp implements AccountService {
     tmpAccounts.put(newFromAcc.publicKey.hash, newFromAcc);
     tmpAccounts.put(transfer.hash, lockedAcc);
     lockedTransfers.add(transfer.hash);
-    logger.info("X rollup transfer locked " + lockedAcc.publicKey.hash.asHex);
+    logger.info(
+        "X rollup transfer locked " + lockedAcc.publicKey.hash.asHex.substring(0, 10) + "...");
     return true;
   }
 
@@ -130,5 +133,9 @@ public class AccountServiceImp implements AccountService {
     List<Account> accs = new ArrayList<>();
     lockedTransfers.forEach(h -> accs.add(getAccount(rootHash, h)));
     return accs;
+  }
+
+  public List<Account> getAccounts(Hash rootHash) {
+    return accountRepository.getAccounts(rootHash);
   }
 }

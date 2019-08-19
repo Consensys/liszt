@@ -1,5 +1,7 @@
 package net.consensys.liszt.accountmanager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import net.consensys.liszt.core.crypto.Hash;
 
@@ -18,6 +20,11 @@ public class AccountRepositoryImp implements AccountRepository {
   @Override
   public Account get(Hash rootHash, Hash owner) {
     return accountState.get(rootHash).get(owner);
+  }
+
+  @Override
+  public List<Account> getAccounts(Hash rootHash) {
+    return new ArrayList<>(accountState.get(rootHash).accountsState.values());
   }
 
   @Override

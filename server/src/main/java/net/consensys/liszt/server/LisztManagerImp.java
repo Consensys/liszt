@@ -84,7 +84,12 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     Hash newRootHash = accountService.getLastAcceptedRootHash();
     batchService.startNewBatch(lastRootHash, newRootHash, transfers);
     Batch batch = batchService.getBatchToProve();
-    logger.info("Last root hash updated " + lastRootHash.asHex + " -> " + newRootHash.asHex);
+    logger.info(
+        "Last root hash updated "
+            + lastRootHash.asHex.substring(0, 10)
+            + "... -> "
+            + newRootHash.asHex.substring(0, 10)
+            + "...");
 
     this.lastRootHash = newRootHash;
 
@@ -135,6 +140,11 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   @Override
   public synchronized List<Account> getLockAccounts() {
     return accountService.getLockAccounts(accountService.getLastAcceptedRootHash());
+  }
+
+  @Override
+  public List<Account> getAccounts() {
+    return accountService.getAccounts(accountService.getLastAcceptedRootHash());
   }
 
   @Override

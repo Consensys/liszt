@@ -15,7 +15,7 @@ java  -Xms6000m -Xmx12048m -classpath server/build/libs/liszt-ws.jar net.consens
 java  -Xms6000m -Xmx12048m -classpath server/build/libs/liszt-ws.jar net.consensys.liszt.server.Start 1 0 5678
 
 
-//Transfers rollup 1->2
+//Transfers rollup 0->1
 curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"Alice","to": "Bob","amount": "8", "nonce":"0", "rIdFrom":"0", "rIdTo":"1"}'
 >> D8F64FDB1C1CAED2611B6ACC931B09D254CEA6C554E0A481428532B721D22B69
 curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"Alice","to": "Bob","amount": "11", "nonce":"0", "rIdFrom":"0", "rIdTo":"1"}'
@@ -29,12 +29,15 @@ http://localhost:4567/accounts/lock
 
 
 //Transfers rollup 2->2
-curl -X POST localhost:5678/transfers -H 'Content-type:application/json' -d '{"from":"Adam","to": "Bob","amount": "11", "nonce":"0", "rIdFrom":"1", "rIdTo":"1", "hashOfThePendingTransfer":"E4DF47C953C8D0042D526D2CF6AD63623093A6592093189A1F5460006AF7ADB7"}'
+curl -X POST localhost:5678/transfers -H 'Content-type:application/json' -d '{"from":"Zac","to": "Bob","amount": "11", "nonce":"0", "rIdFrom":"1", "rIdTo":"1", "hashOfThePendingTransfer":"E4DF47C953C8D0042D526D2CF6AD63623093A6592093189A1F5460006AF7ADB7"}'
 curl -X POST localhost:5678/transfers -H 'Content-type:application/json' -d '{"from":"Carol","to": "Adam","amount": "5", "nonce":"0", "rIdFrom":"1", "rIdTo":"1"}'
 curl -X POST localhost:5678/transfers -H 'Content-type:application/json' -d '{"from":"Carol","to": "Adam","amount": "10", "nonce":"0", "rIdFrom":"1", "rIdTo":"1"}'
 
 
 //Transfers rollup 1->1
+
+curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"E4DF47C953C8D0042D526D2CF6AD63623093A6592093189A1F5460006AF7ADB7","to": "Adam","amount": "11", "nonce":"0", "rIdFrom":"0", "rIdTo":"0", "hashOfThePendingTransfer":"E4DF47C953C8D0042D526D2CF6AD63623093A6592093189A1F5460006AF7ADB7"}'
+
 
 curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"E4DF47C953C8D0042D526D2CF6AD63623093A6592093189A1F5460006AF7ADB7","to": "Zac","amount": "11", "nonce":"0", "rIdFrom":"0", "rIdTo":"0", "hashOfThePendingTransfer":"E4DF47C953C8D0042D526D2CF6AD63623093A6592093189A1F5460006AF7ADB7"}'
 curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"Carol","to": "Adam","amount": "20", "nonce":"0", "rIdFrom":"0", "rIdTo":"0"}'
