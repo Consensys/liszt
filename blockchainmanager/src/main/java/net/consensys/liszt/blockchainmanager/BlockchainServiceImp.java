@@ -9,10 +9,13 @@ import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class BlockchainServiceImp implements BlockchainService {
 
   private Liszt liszt;
+  private static final Logger logger = LogManager.getLogger("Liszt");
 
   @Override
   public void startLocalNode() throws Exception {
@@ -26,14 +29,20 @@ public class BlockchainServiceImp implements BlockchainService {
           deployer.deploySmartContract(controller.accounts().get(0).getPrivateKey());
 
       this.liszt = new Liszt(lisztContract);
+      String contractAddr = lisztContract.getContractAddress();
+      logger.info("Deploying smart contract " + contractAddr);
 
       controller.saveContractAddress(lisztContract.getContractAddress());
 
     } else {
 
-      String addr = controller.getContractAddress();
+      String contractAddr = controller.getContractAddress();
+      logger.info("Loading smart contract " + contractAddr);
+
       this.liszt =
-          new Liszt(deployer.loadSmartContract(controller.accounts().get(0).getPrivateKey(), addr));
+          new Liszt(
+              deployer.loadSmartContract(
+                  controller.accounts().get(0).getPrivateKey(), contractAddr));
     }
   }
 

@@ -3,6 +3,8 @@ apply plugin: 'java'
 dependencies {
     testCompile 'junit:junit:4.11'
     compile project(':core')
+    compile 'log4j:log4j:1.2.17'
+
 }
 
 ext {

@@ -31,4 +31,8 @@ dependencies {
     implementation "org.springframework:spring-context:5.1.4.RELEASE"
 
     testImplementation "org.springframework.boot:spring-boot-starter-test:2.1.2.RELEASE"
+
+    compile 'com.sparkjava:spark-core:2.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
+
 }

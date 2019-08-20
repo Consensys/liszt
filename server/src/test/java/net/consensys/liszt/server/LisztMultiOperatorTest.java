@@ -28,12 +28,11 @@ public class LisztMultiOperatorTest {
   }
 
   @Test
-  public void balanceUpdate(){
+  public void balanceUpdate() {
     Account aliceAcc01 = lisztManager1.getAccount(TestUtils.alice);
     Assert.assertEquals(aliceAcc01.amount, BigInteger.valueOf(85));
     Account bobAcc01 = lisztManager1.getAccount(TestUtils.bob);
     Assert.assertEquals(bobAcc01.amount, BigInteger.valueOf(100));
-
 
     Account aliceAcc02 = lisztManager2.getAccount(TestUtils.alice);
     Assert.assertEquals(aliceAcc02.amount, BigInteger.valueOf(100));
@@ -61,7 +60,6 @@ public class LisztMultiOperatorTest {
     Account lockedAcc = lisztManager1.getAccount(rTransfer.hash.asHex);
     Assert.assertEquals(lockedAcc.amount, BigInteger.valueOf(5));
   }
-
 
   @Test
   public void transferDone() throws Exception {
@@ -91,7 +89,6 @@ public class LisztMultiOperatorTest {
       Assert.assertTrue(isValid);
     }
 
-
     Optional<String> hashOfThePendingTransfer = done.hashOfThePendingTransfer;
     Account lockedAccount = lisztManager1.getAccount(hashOfThePendingTransfer.get());
     Assert.assertEquals(lockedAccount.amount, BigInteger.valueOf(5));
@@ -106,7 +103,7 @@ public class LisztMultiOperatorTest {
             (short) 0,
             new Signature(),
             0,
-                hashOfThePendingTransfer);
+            hashOfThePendingTransfer);
 
     isValid = lisztManager1.addTransfer(unlock);
     Assert.assertTrue(isValid);
@@ -125,12 +122,11 @@ public class LisztMultiOperatorTest {
     Assert.assertEquals(lockedAcc.amount, BigInteger.valueOf(0));
   }
 
-
-  public void addXTransfers(){
+  public void addXTransfers() {
     for (int i = 0; i < 3; i++) {
       boolean isValid =
-              lisztManager1.addTransfer(
-                      TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5)));
+          lisztManager1.addTransfer(
+              TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5)));
       Assert.assertTrue(isValid);
     }
   }

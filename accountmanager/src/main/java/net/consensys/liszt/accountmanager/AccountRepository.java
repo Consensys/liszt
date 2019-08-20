@@ -1,5 +1,6 @@
 package net.consensys.liszt.accountmanager;
 
+import java.util.List;
 import net.consensys.liszt.core.crypto.Hash;
 
 public interface AccountRepository {
@@ -23,6 +24,12 @@ public interface AccountRepository {
    * @return account
    */
   Account get(Hash rootHash, Hash owner);
+
+  /**
+   * @param rootHash
+   * @return all accounts for given rootHash
+   */
+  List<Account> getAccounts(Hash rootHash);
 
   /** saves accounts state in the repository */
   void saveNewAccountsState(Hash rootHash, AccountsState accountsState);
