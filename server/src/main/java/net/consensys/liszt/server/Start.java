@@ -21,9 +21,11 @@ public class Start {
 
     new Controller(rollup0, rollup1);
 
-    after((Filter) (request, response) -> {
-      response.header("Access-Control-Allow-Origin", "*");
-      response.header("Access-Control-Allow-Methods", "GET");
-    });
+    after(
+        (Filter)
+            (request, response) -> {
+              response.header("Access-Control-Allow-Origin", "*");
+              response.header("Access-Control-Allow-Methods", "GET");
+            });
   }
 }

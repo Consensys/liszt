@@ -31,8 +31,7 @@ public class Controller {
                       rollupAccount.publicKey.hash.asHex,
                       rollupAccount.amount,
                       rollupAccount.nonce,
-                          rollupAccount.isLock)
-              );
+                      rollupAccount.isLock));
         });
 
     get(
@@ -69,7 +68,8 @@ public class Controller {
                   new AcccountInfo(
                       rollupAccount.publicKey.hash.asHex,
                       rollupAccount.amount,
-                      rollupAccount.nonce, true));
+                      rollupAccount.nonce,
+                      true));
         });
 
     post(

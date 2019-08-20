@@ -25,6 +25,10 @@ public interface AccountRepository {
    */
   Account get(Hash rootHash, Hash owner);
 
+  /**
+   * @param rootHash
+   * @return all accounts for given rootHash
+   */
   List<Account> getAccounts(Hash rootHash);
 
   /** saves accounts state in the repository */

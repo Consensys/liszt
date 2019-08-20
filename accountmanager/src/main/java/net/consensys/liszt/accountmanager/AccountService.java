@@ -24,5 +24,9 @@ public interface AccountService {
   /** @return list of locked accounts */
   List<Account> getLockAccounts(Hash rootHash);
 
+  /**
+   * @param rootHash
+   * @return all accounts for given rootHash
+   */
   List<Account> getAccounts(Hash rootHash);
 }
