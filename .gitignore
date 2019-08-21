@@ -8,3 +8,6 @@ gradle
 accountmanager/build/
 blockchainmanager/build/
 transactionmanager/build/
+liszt-ui/node_modules
+liszt-ui//dist
+liszt-ui/.DS_Store
