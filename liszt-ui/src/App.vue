@@ -8,6 +8,8 @@
 <script>
 import AccountTable from '@/components/AccountTable.vue'
 
+const PORT = process.env.VUE_APP_API_PORT
+
 export default {
   name: 'app',
   components: {
@@ -28,7 +30,7 @@ export default {
   methods: {
     async getAccounts() {
       try {
-        const response = await fetch('http://localhost:4567/accounts')
+        const response = await fetch('http://localhost:'+PORT+'/accounts')
         const data = await response.json()
         this.accounts = data
       } catch (error) {
