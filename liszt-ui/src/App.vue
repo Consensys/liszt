@@ -18,7 +18,7 @@ export default {
 
   data() {
     return {
-      fields: ['owner','isLock' ,'balance', 'show_details'],
+      fields: ['index','owner','isLock' ,'balance', 'show_details'],
       accounts: []
     }
   },

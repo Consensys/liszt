@@ -37,17 +37,16 @@ public class AccountServiceImp implements AccountService {
       logger.info(
           "Transfer is invalid "
               + transfer.hash.asHex
-              + " isSigned "
+              + ", isSigned "
               + idSigned
-              + " senderExist "
+              + ", senderExist "
               + senderExist
-              + " "
+              + ", from "
               + transfer.from
-              + " recipientExist "
+              + ", recipientExist "
               + recipientExist
-              + " "
+              + ", to "
               + transfer.to);
-
       // accountRepository.get(fatherRootHash)
     }
     return ok;
@@ -92,6 +91,14 @@ public class AccountServiceImp implements AccountService {
 
     BigInteger newFromAccBalance = fromAcc.amount.subtract(transfer.amount);
     if (newFromAccBalance.compareTo(BigInteger.ZERO) == -1) {
+      logger.info(
+          "Insufficient balance for transfer "
+              + transfer.hash.asHex.substring(0, 10)
+              + " balance: "
+              + fromAcc.amount
+              + "transfer amount: "
+              + transfer.amount);
+
       return false;
     }
     Account toAcc = tmpAccounts.get(transfer.to.hash);
