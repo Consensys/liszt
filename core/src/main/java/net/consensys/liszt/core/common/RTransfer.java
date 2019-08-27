@@ -47,7 +47,7 @@ public class RTransfer {
             to.toString(),
             amount.toString(),
             String.valueOf(rIdFrom),
-            String.valueOf(rIdFrom),
+            String.valueOf(rIdTo),
             sig.toString());
   }
 

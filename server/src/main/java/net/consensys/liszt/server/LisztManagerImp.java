@@ -64,8 +64,12 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     Optional<Account> lockedAccount =
         lockedAccounts.stream().filter(a -> a.publicKey.equals(rtx.from)).findAny();
 
-    if (lockedAccount.isPresent() && !canBeUnlocked(rtx)) {
-      return false;
+    if (lockedAccount.isPresent()) {
+      boolean canBeUnlocked = canBeUnlocked(rtx);
+      if (!canBeUnlocked) {
+        logger.info("Transfer can't be unlocked");
+        return false;
+      }
     }
 
     transferService.addTransfer(rtx);
@@ -92,7 +96,6 @@ public class LisztManagerImp implements LisztManager, ProverListener {
             + "...");
 
     this.lastRootHash = newRootHash;
-
     proveService.proveBatch(batch);
     return true;
   }
@@ -161,11 +164,13 @@ public class LisztManagerImp implements LisztManager, ProverListener {
       TransferDone transferDone =
           blockchainService.getTransferDone(otherRollupId, hashOfThePendingTransfer);
 
-      return (rtx.to.hash.asHex.equals(transferDone.from)
-          && rtx.amount.equals(transferDone.amount));
+      boolean isInLockDone =
+          rtx.to.hash.asHex.equals(transferDone.from) && rtx.amount.equals(transferDone.amount);
+
+      logger.info("Lock Done status for transfer: " + rtx.hash.asHex + " " + isInLockDone);
+      return isInLockDone;
 
     } catch (Exception e) {
-
       e.printStackTrace();
       return false;
     }

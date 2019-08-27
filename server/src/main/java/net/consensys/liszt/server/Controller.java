@@ -28,10 +28,11 @@ public class Controller {
           return new Gson()
               .toJson(
                   new AcccountInfo(
-                      rollupAccount.publicKey.hash.asHex,
+                      rollupAccount.publicKey.owner,
                       rollupAccount.amount,
                       rollupAccount.nonce,
-                      rollupAccount.isLock));
+                      rollupAccount.isLock,
+                      rollupAccount.publicKey.hash.asHex));
         });
 
     get(
@@ -41,35 +42,11 @@ public class Controller {
 
           List<AcccountInfo> accs = new ArrayList<>();
           for (Account a : rollupAccounts) {
-            accs.add(new AcccountInfo(a.publicKey.hash.asHex, a.amount, a.nonce, a.isLock));
+            accs.add(
+                new AcccountInfo(
+                    a.publicKey.owner, a.amount, a.nonce, a.isLock, a.publicKey.hash.asHex));
           }
           return new Gson().toJson(accs);
-        });
-
-    get(
-        "/accounts/lock",
-        (req, res) -> {
-          List<Account> rollupAccount = manager.getLockAccounts();
-
-          List<AcccountInfo> accs = new ArrayList<>();
-          for (Account a : rollupAccount) {
-            accs.add(new AcccountInfo(a.publicKey.hash.asHex, a.amount, a.nonce, true));
-          }
-          return new Gson().toJson(accs);
-        });
-
-    get(
-        "/accounts/lock/:owner",
-        (req, res) -> {
-          net.consensys.liszt.accountmanager.Account rollupAccount =
-              manager.getAccount(new PublicKey(new Hash(req.params(":owner"))));
-          return new Gson()
-              .toJson(
-                  new AcccountInfo(
-                      rollupAccount.publicKey.hash.asHex,
-                      rollupAccount.amount,
-                      rollupAccount.nonce,
-                      true));
         });
 
     post(

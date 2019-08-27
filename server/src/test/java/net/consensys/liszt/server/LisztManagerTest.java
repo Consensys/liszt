@@ -34,7 +34,7 @@ public class LisztManagerTest {
 
     RTransfer rTransfer = TestUtils.createMockTransferFromAliceToBob(3, BigInteger.valueOf(5));
     long timeout = lisztManager.getLockDoneTimeout(rTransfer.hash);
-    Assert.assertEquals(timeout, 100);
+    Assert.assertEquals(timeout, 0);
   }
 
   @Test
@@ -86,7 +86,6 @@ public class LisztManagerTest {
     Assert.assertEquals(timeout, 100);
 
     Account lockedAcc = lisztManager.getAccount(rTransfer.hash.asHex);
-    System.out.println(lockedAcc);
     Assert.assertEquals(lockedAcc.amount, BigInteger.valueOf(5));
   }
 

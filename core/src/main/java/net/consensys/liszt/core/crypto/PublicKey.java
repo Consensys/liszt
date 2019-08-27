@@ -3,7 +3,7 @@ package net.consensys.liszt.core.crypto;
 import java.util.Objects;
 
 public class PublicKey {
-  private String owner;
+  public final String owner;
   public final Hash hash;
 
   public PublicKey(String owner) {
@@ -12,6 +12,7 @@ public class PublicKey {
   }
 
   public PublicKey(Hash hash) {
+    this.owner = hash.asHex;
     this.hash = hash;
   }
 
