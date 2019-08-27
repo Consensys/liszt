@@ -55,20 +55,26 @@ public class Controller {
           response.type("application/json");
 
           Transfer transfer = new Gson().fromJson(request.body(), Transfer.class);
-          PublicKey from = new PublicKey(transfer.from);
+          // PublicKey from = new PublicKey(transfer.from);
+          // Optional<String> hashOfThePendingTransfer = Optional.empty();
+          // if (transfer.hashOfThePendingTransfer != null) {
+          // hashOfThePendingTransfer = Optional.of(transfer.hashOfThePendingTransfer);
+          // if (transfer.hashOfThePendingTransfer.equals(transfer.from)) {
+          //  PublicKey from = new PublicKey(new Hash(transfer.from));
+          // }
+          // }
+
+          PublicKey from = new PublicKey(new Hash(transfer.from));
           Optional<String> hashOfThePendingTransfer = Optional.empty();
           if (transfer.hashOfThePendingTransfer != null) {
             hashOfThePendingTransfer = Optional.of(transfer.hashOfThePendingTransfer);
-            if (transfer.hashOfThePendingTransfer.equals(transfer.from)) {
-              from = new PublicKey(new Hash(transfer.from));
-            }
           }
 
           RTransfer rTransfer =
               new RTransfer(
                   transfer.nonce,
                   from,
-                  new PublicKey(transfer.to),
+                  new PublicKey(new Hash(transfer.to)),
                   transfer.amount,
                   transfer.rIdFrom,
                   transfer.rIdTo,

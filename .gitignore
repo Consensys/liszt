@@ -12,3 +12,6 @@ liszt-ui/node_modules
 liszt-ui//dist
 liszt-ui/.DS_Store
 liszt-ui/src/node_modules/
+liszt-ui/package-lock.json
+liszt-ui/yarn.lock
+
