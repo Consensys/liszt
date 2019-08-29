@@ -3,6 +3,7 @@ package net.consensys.liszt.server;
 import java.math.BigInteger;
 import java.util.Optional;
 import net.consensys.liszt.accountmanager.Account;
+import net.consensys.liszt.accountmanager.InMemoryAccountsStateProvider;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.PublicKey;
@@ -21,9 +22,9 @@ public class LisztMultiOperatorTest {
     short rid1 = 0;
     short rid2 = 1;
 
-    lisztManager1 = new LisztManagerImp(rid1, rid2);
+    lisztManager1 = new LisztManagerImp(rid1, rid2, new InMemoryAccountsStateProvider());
     Thread.sleep(2000);
-    lisztManager2 = new LisztManagerImp(rid2, rid1);
+    lisztManager2 = new LisztManagerImp(rid2, rid1, new InMemoryAccountsStateProvider());
     addXTransfers();
   }
 

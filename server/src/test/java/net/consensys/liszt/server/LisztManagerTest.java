@@ -2,6 +2,7 @@ package net.consensys.liszt.server;
 
 import java.math.BigInteger;
 import net.consensys.liszt.accountmanager.Account;
+import net.consensys.liszt.accountmanager.InMemoryAccountsStateProvider;
 import net.consensys.liszt.core.common.RTransfer;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,7 +17,7 @@ public class LisztManagerTest {
     short rid1 = 0;
     short rid2 = 1;
 
-    lisztManager = new LisztManagerImp(rid1, rid2);
+    lisztManager = new LisztManagerImp(rid1, rid2, new InMemoryAccountsStateProvider());
   }
 
   @Test

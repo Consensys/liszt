@@ -30,7 +30,10 @@ public class AccountServiceImp implements AccountService {
 
     boolean idSigned = transfer.isSigned();
     boolean senderExist = accountRepository.exists(fatherRootHash, transfer.from.hash);
-    boolean recipientExist = accountRepository.exists(fatherRootHash, transfer.to.hash);
+    boolean recipientExist = true;
+    if (transfer.from == transfer.to) {
+      recipientExist = accountRepository.exists(fatherRootHash, transfer.to.hash);
+    }
 
     boolean ok = idSigned && senderExist && recipientExist;
     if (!ok) {

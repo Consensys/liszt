@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.consensys.liszt.accountmanager.Account;
+import net.consensys.liszt.accountmanager.RandomAccountStateProvider;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.PublicKey;
@@ -20,7 +21,7 @@ public class Controller {
 
   public Controller(short rollup0, short rollup1) {
 
-    manager = new LisztManagerImp(rollup0, rollup1);
+    manager = new LisztManagerImp(rollup0, rollup1, new RandomAccountStateProvider(rollup0));
     get(
         "/accounts/users/:owner",
         (req, res) -> {
@@ -52,10 +53,9 @@ public class Controller {
     post(
         "/transfers",
         (request, response) -> {
-        //  System.out.println("Transfer");
-         // System.out.println(request.body());
+          //  System.out.println("Transfer");
+          // System.out.println(request.body());
           response.type("application/json");
-
 
           Transfer transfer = new Gson().fromJson(request.body(), Transfer.class);
           // PublicKey from = new PublicKey(transfer.from);
@@ -86,9 +86,7 @@ public class Controller {
                   hashOfThePendingTransfer);
           boolean isValid = manager.addTransfer(rTransfer);
           return new Gson().toJson(new Response(rTransfer.hash.asHex, isValid));
-         // return new Gson().toJson("OK");
-        }
-        );
-
+          // return new Gson().toJson("OK");
+        });
   }
 }

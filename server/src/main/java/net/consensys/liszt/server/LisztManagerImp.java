@@ -29,10 +29,10 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   private final short rollupId;
   private final short otherRollupId;
 
-  public LisztManagerImp(short rollupId, short otherRollupId) {
+  public LisztManagerImp(
+      short rollupId, short otherRollupId, AccountStateProvider accountsStateProvider) {
     this.rollupId = rollupId;
     this.otherRollupId = otherRollupId;
-    AccountStateProvider accountsStateProvider = new InMemoryAccountsStateProvider();
     Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState();
     this.lastRootHash = accountsStateProvider.lastAcceptedRootHash();
     transferService = new TransferServiceImpl(accountsStateProvider.batchSize());
