@@ -36,7 +36,7 @@
       </b-form-group>
 
       <b-form-row>
-        <b-col b-col cols="8"><b-form-input v-model="form.amount"  placeholder="Pending Transfer" /></b-col>
+        <b-col b-col cols="8"><b-form-input v-model="form.hashOfThePendingTransfer"  placeholder="Pending Transfer" /></b-col>
 
         <b-col><b-form-input v-model="form.amount"  placeholder="Amount" /></b-col>
         <b-col><b-form-input v-model="form.timeout" placeholder="Timeout"/></b-col>
@@ -63,8 +63,9 @@
     computed: {
        form: {
           get: function(){
-                return Object.assign({}, this.transfer);
+                return this.transfer; //return Object.assign({}, this.transfer);
            },
+
            set: function(newValue){
            }
        },
@@ -79,7 +80,11 @@
         evt.preventDefault()
         // Reset our form values
         this.form.from = ''
-        this.form.rIdFrom = ''
+        this.form.to= ''
+        this.form.rIdTo=''
+        this.form.amount=''
+        this.form.nonce=''
+        this.form.hashOfThePendingTransfer=''
       }
     }
   }

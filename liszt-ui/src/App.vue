@@ -33,6 +33,7 @@ export default {
         rIdTo:'',
         amount:'',
         nonce:'',
+        hashOfThePendingTransfer:'',
       },
     }
   },
@@ -54,7 +55,7 @@ export default {
 
     async addTransfer(transfer) {
       try {
-        const response = await fetch('http://localhost:4567/transfers', {
+        const response = await fetch('http://localhost:'+PORT+'/transfers', {
           method: 'POST',
           body: JSON.stringify(transfer),
           headers: { 'Content-type': 'application/json; charset=UTF-8' },
@@ -67,7 +68,16 @@ export default {
     },
 
     loadData(index){
+        this.transfer.from = ''
+        this.transfer.to= ''
+        this.transfer.rIdTo=''
+        this.transfer.amount=''
+        this.transfer.nonce=''
+        this.transfer.hashOfThePendingTransfer=''
+
         this.transfer.from = this.accounts[index].publicKey
+        this.transfer.nonce = this.accounts[index].nonce+1
+
     },
   },
 }
