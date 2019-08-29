@@ -52,7 +52,10 @@ public class Controller {
     post(
         "/transfers",
         (request, response) -> {
+        //  System.out.println("Transfer");
+         // System.out.println(request.body());
           response.type("application/json");
+
 
           Transfer transfer = new Gson().fromJson(request.body(), Transfer.class);
           // PublicKey from = new PublicKey(transfer.from);
@@ -83,6 +86,9 @@ public class Controller {
                   hashOfThePendingTransfer);
           boolean isValid = manager.addTransfer(rTransfer);
           return new Gson().toJson(new Response(rTransfer.hash.asHex, isValid));
-        });
+         // return new Gson().toJson("OK");
+        }
+        );
+
   }
 }

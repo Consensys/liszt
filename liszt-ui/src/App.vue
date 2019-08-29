@@ -1,25 +1,39 @@
 <template>
   <div id="app" class="small-container">
-    <h1>Accounts</h1>
-    <account-table v-bind:accounts="accounts" v-bind:fields="fields"/>
+    <h3>Transfer</h3>
+    <transfer-form @add:transfer="addTransfer" v-bind:transfer="transfer"/>
+
+    <h3>Accounts</h3>
+    <account-table @load:data="loadData" v-bind:accounts="accounts" v-bind:fields="fields"/>
   </div>
 </template>
 
 <script>
+import TransferForm from '@/components/TransferForm.vue'
 import AccountTable from '@/components/AccountTable.vue'
 
 const PORT = process.env.VUE_APP_API_PORT
+const ROLLUP_ID = process.env.VUE_APP_ROLLUP_ID
 
 export default {
   name: 'app',
   components: {
+    TransferForm,
     AccountTable
   },
 
   data() {
     return {
-      fields: ['index','owner','isTmp' ,'balance', 'show_details'],
-      accounts: []
+      fields: ['index','owner','isTmp' ,'balance', 'show_details', 'load'],
+      accounts: [],
+      transfer:  {
+        from: '',
+        rIdFrom: ROLLUP_ID,
+        to: '',
+        rIdTo:'',
+        amount:'',
+        nonce:'',
+      },
     }
   },
 
@@ -37,6 +51,24 @@ export default {
         console.error(error)
       }
     },
+
+    async addTransfer(transfer) {
+      try {
+        const response = await fetch('http://localhost:4567/transfers', {
+          method: 'POST',
+          body: JSON.stringify(transfer),
+          headers: { 'Content-type': 'application/json; charset=UTF-8' },
+        })
+        const data = await response.json()
+        console.error(data)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    loadData(index){
+        this.transfer.from = this.accounts[index].publicKey
+    },
   },
 }
 </script>
@@ -44,6 +76,6 @@ export default {
 <style>
   .small-container {
     max-width: 1080px;
-    max-height: 1050px;
+    max-height: 100=px;
   }
 </style>
