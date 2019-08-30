@@ -11,7 +11,7 @@
 
       <b-col>
          <b-form-group label="Rollup Id">
-             <b-form-input  :disabled="true" v-model="form.rIdFrom"  placeholder="Source Rollup Id" />
+             <b-form-input  :disabled="true" v-model="form.rIdFrom" required placeholder="Source Rollup Id" />
           </b-form-group>
       </b-col>
      </b-form-row>
@@ -26,7 +26,7 @@
 
          <b-col>
              <b-form-group id="input-group-rollupId2" label="Target Rollup Id" label-for="input-9">
-             <b-form-input v-model="form.rIdTo"  placeholder="Rollup Id" />
+             <b-form-input v-model="form.rIdTo" required placeholder="Rollup Id" />
              </b-form-group>
              </b-col>
 
@@ -38,9 +38,9 @@
       <b-form-row>
         <b-col b-col cols="8"><b-form-input v-model="form.hashOfThePendingTransfer"  placeholder="Pending Transfer" /></b-col>
 
-        <b-col><b-form-input v-model="form.amount"  placeholder="Amount" /></b-col>
-        <b-col><b-form-input v-model="form.timeout" placeholder="Timeout"/></b-col>
-        <b-col><b-form-input v-model="form.nonce" placeholder="Nonce"/></b-col>
+        <b-col><b-form-input v-model="form.amount" required placeholder="Amount" /></b-col>
+        <b-col><b-form-input v-model="form.timeout" required placeholder="Timeout"/></b-col>
+        <b-col><b-form-input v-model="form.nonce" required placeholder="Nonce"/></b-col>
       </b-form-row>
 
 

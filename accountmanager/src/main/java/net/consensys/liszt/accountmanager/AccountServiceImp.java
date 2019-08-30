@@ -23,10 +23,6 @@ public class AccountServiceImp implements AccountService {
 
   @Override
   public boolean checkBasicValidity(RTransfer transfer, Hash fatherRootHash) {
-    // inner rollup transfers, transfer is valid if:
-    // 1) Signature valid
-    // 2) "from", and "to" accounts exist is in the rolluo.
-    // TODO conditions for cross rollup transfer
 
     boolean idSigned = transfer.isSigned();
     boolean senderExist = accountRepository.exists(fatherRootHash, transfer.from.hash);
@@ -94,7 +90,7 @@ public class AccountServiceImp implements AccountService {
 
     BigInteger newFromAccBalance = fromAcc.amount.subtract(transfer.amount);
     if (newFromAccBalance.compareTo(BigInteger.ZERO) == -1) {
-      logger.info(
+      logger.error(
           "Insufficient balance for transfer "
               + transfer.hash.asHex.substring(0, 10)
               + " balance: "
@@ -102,6 +98,13 @@ public class AccountServiceImp implements AccountService {
               + "transfer amount: "
               + transfer.amount);
 
+      return false;
+    }
+
+    if (fromAcc.nonce>=transfer.nonce){
+      logger.error("Transfer nonce should be bigger than account nonce");
+      logger.error("Nonce for transfer "+transfer.hash+" is "+transfer.nonce);
+      logger.error("Nonce for account "+fromAcc.publicKey+" is "+fromAcc.nonce);
       return false;
     }
     Account toAcc = tmpAccounts.get(transfer.to.hash);

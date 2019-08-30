@@ -86,7 +86,6 @@ public class Controller {
                   hashOfThePendingTransfer);
           boolean isValid = manager.addTransfer(rTransfer);
           return new Gson().toJson(new Response(rTransfer.hash.asHex, isValid));
-          // return new Gson().toJson("OK");
         });
   }
 }
