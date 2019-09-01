@@ -1,3 +1,4 @@
+open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
 rollup 0-0
 
 curl -X POST localhost:4567/transfers -H 'Content-type:application/json' -d '{"from":"3BC51062973C458D5A6F2D8D64A023246354AD7E064B1E4E009EC8A0699A3043","to": "CD9FB1E148CCD8442E5AA74904CC73BF6FB54D1D54D333BD596AA9BB4BB4E961","amount": "2", "nonce":"0", "rIdFrom":"0", "rIdTo":"0"}'

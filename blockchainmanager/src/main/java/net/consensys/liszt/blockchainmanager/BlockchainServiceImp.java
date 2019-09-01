@@ -54,6 +54,8 @@ public class BlockchainServiceImp implements BlockchainService {
       }
 
       if (!t.hashOfThePendingTransfer.equals(Optional.empty())) {
+        // TODO add check if transfer is not in transfer done before adding it (also in smart
+        // contract)
         liszt.updateTransferDone(t);
       }
     }

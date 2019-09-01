@@ -73,7 +73,7 @@ public class AccountServiceTest {
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer1 =
         new RTransfer(
-            0,
+            1,
             alice,
             kate,
             BigInteger.valueOf(20),
@@ -84,7 +84,7 @@ public class AccountServiceTest {
             Optional.empty());
     RTransfer transfer2 =
         new RTransfer(
-            0,
+            2,
             zac,
             kate,
             BigInteger.valueOf(30),
@@ -134,7 +134,7 @@ public class AccountServiceTest {
     List<RTransfer> transfers = new ArrayList<>();
     RTransfer transfer =
         new RTransfer(
-            0,
+            1,
             alice,
             bob,
             BigInteger.valueOf(10),

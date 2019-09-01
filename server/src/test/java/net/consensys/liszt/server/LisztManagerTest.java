@@ -2,6 +2,7 @@ package net.consensys.liszt.server;
 
 import java.math.BigInteger;
 import net.consensys.liszt.accountmanager.Account;
+import net.consensys.liszt.accountmanager.InMemoryAccountsStateProvider;
 import net.consensys.liszt.core.common.RTransfer;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,7 +17,7 @@ public class LisztManagerTest {
     short rid1 = 0;
     short rid2 = 1;
 
-    lisztManager = new LisztManagerImp(rid1, rid2);
+    lisztManager = new LisztManagerImp(rid1, rid2, new InMemoryAccountsStateProvider());
   }
 
   @Test
@@ -24,7 +25,7 @@ public class LisztManagerTest {
     for (int i = 0; i < 10; i++) {
       boolean isValid =
           lisztManager.addTransfer(
-              TestUtils.createMockTransferFromAliceToBob(i, BigInteger.valueOf(5)));
+              TestUtils.createMockTransferFromAliceToBob(i + 1, BigInteger.valueOf(5)));
       Assert.assertTrue(isValid);
     }
     Account aliceAcc = lisztManager.getAccount(TestUtils.alice);
@@ -53,9 +54,9 @@ public class LisztManagerTest {
   public void illegalTransfersShouldBeFilteredOut() {
     for (int i = 0; i < 21; i = i + 2) {
       lisztManager.addTransfer(
-          TestUtils.createMockTransferFromAliceToBob(i, BigInteger.valueOf(800)));
+          TestUtils.createMockTransferFromAliceToBob(i + 1, BigInteger.valueOf(800)));
       lisztManager.addTransfer(
-          TestUtils.createMockTransferFromAliceToBob(i + 1, BigInteger.valueOf(5)));
+          TestUtils.createMockTransferFromAliceToBob(i + 2, BigInteger.valueOf(5)));
     }
     Account aliceAcc = lisztManager.getAccount(TestUtils.alice);
     Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(55));
@@ -66,7 +67,7 @@ public class LisztManagerTest {
     for (int i = 0; i < 10; i++) {
       boolean isValid =
           lisztManager.addTransfer(
-              TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5)));
+              TestUtils.createMockXTransferFromAliceToBob(i + 1, BigInteger.valueOf(5)));
       Assert.assertTrue(isValid);
     }
     Account aliceAcc = lisztManager.getAccount(TestUtils.alice);
@@ -77,7 +78,8 @@ public class LisztManagerTest {
     for (int i = 0; i < lisztManager.getLockAccounts().size(); i++) {
       Account acc = lisztManager.getLockAccounts().get(i);
       Assert.assertEquals(acc.amount, BigInteger.valueOf(5));
-      RTransfer rTransfer = TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5));
+      RTransfer rTransfer =
+          TestUtils.createMockXTransferFromAliceToBob(i + 1, BigInteger.valueOf(5));
       Assert.assertEquals(acc.publicKey.hash, rTransfer.hash);
     }
 
@@ -91,21 +93,22 @@ public class LisztManagerTest {
 
   @Test
   public void mixTransfers() throws Exception {
-    for (int i = 0; i < 10; i++) {
+    int size = 10;
+    for (int i = 1; i < size; i = i + 2) {
       boolean isValid =
           lisztManager.addTransfer(
               TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5)));
       Assert.assertTrue(isValid);
       isValid =
           lisztManager.addTransfer(
-              TestUtils.createMockTransferFromAliceToBob(i, BigInteger.valueOf(5)));
+              TestUtils.createMockTransferFromAliceToBob(i + 1, BigInteger.valueOf(5)));
       Assert.assertTrue(isValid);
     }
 
     Account aliceAcc = lisztManager.getAccount(TestUtils.alice);
-    Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(10));
+    Assert.assertEquals(aliceAcc.amount, BigInteger.valueOf(55));
     Account bobAcc = lisztManager.getAccount(TestUtils.bob);
-    Assert.assertEquals(bobAcc.amount, BigInteger.valueOf(145));
+    Assert.assertEquals(bobAcc.amount, BigInteger.valueOf(120));
 
     RTransfer rTransfer = TestUtils.createMockXTransferFromAliceToBob(3, BigInteger.valueOf(5));
     long timeout = lisztManager.getLockDoneTimeout(rTransfer.hash);

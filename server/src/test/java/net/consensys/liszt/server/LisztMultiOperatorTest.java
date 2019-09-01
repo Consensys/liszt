@@ -3,6 +3,7 @@ package net.consensys.liszt.server;
 import java.math.BigInteger;
 import java.util.Optional;
 import net.consensys.liszt.accountmanager.Account;
+import net.consensys.liszt.accountmanager.InMemoryAccountsStateProvider;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.PublicKey;
@@ -15,15 +16,17 @@ public class LisztMultiOperatorTest {
 
   private LisztManager lisztManager1;
   private LisztManager lisztManager2;
+  private int nonce;
 
   @Before
   public void setUp() throws InterruptedException {
+    nonce = 1;
     short rid1 = 0;
     short rid2 = 1;
 
-    lisztManager1 = new LisztManagerImp(rid1, rid2);
+    lisztManager1 = new LisztManagerImp(rid1, rid2, new InMemoryAccountsStateProvider());
     Thread.sleep(2000);
-    lisztManager2 = new LisztManagerImp(rid2, rid1);
+    lisztManager2 = new LisztManagerImp(rid2, rid1, new InMemoryAccountsStateProvider());
     addXTransfers();
   }
 
@@ -46,7 +49,8 @@ public class LisztMultiOperatorTest {
     for (int i = 0; i < lisztManager1.getLockAccounts().size(); i++) {
       Account lockedAcc = lisztManager1.getLockAccounts().get(i);
       Assert.assertEquals(lockedAcc.amount, BigInteger.valueOf(5));
-      RTransfer rTransfer = TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5));
+      RTransfer rTransfer =
+          TestUtils.createMockXTransferFromAliceToBob(i + 1, BigInteger.valueOf(5));
       Assert.assertEquals(lockedAcc.publicKey.hash, rTransfer.hash);
     }
 
@@ -67,7 +71,7 @@ public class LisztMultiOperatorTest {
 
     RTransfer done =
         new RTransfer(
-            3,
+            nonce++,
             TestUtils.zac,
             TestUtils.bob,
             BigInteger.valueOf(5),
@@ -85,7 +89,7 @@ public class LisztMultiOperatorTest {
     for (int i = 0; i < 3; i++) {
       isValid =
           lisztManager2.addTransfer(
-              TestUtils.createMockTransferFromAliceToBob(i, BigInteger.valueOf(0)));
+              TestUtils.createMockTransferFromAliceToBob(nonce++, BigInteger.valueOf(0)));
       Assert.assertTrue(isValid);
     }
 
@@ -95,7 +99,7 @@ public class LisztMultiOperatorTest {
 
     RTransfer unlock =
         new RTransfer(
-            0,
+            nonce++,
             new PublicKey(new Hash(hashOfThePendingTransfer.get())),
             TestUtils.zac,
             BigInteger.valueOf(5),
@@ -111,7 +115,7 @@ public class LisztMultiOperatorTest {
     for (int i = 0; i < 2; i++) {
       isValid =
           lisztManager1.addTransfer(
-              TestUtils.createMockTransferFromAliceToBob(i, BigInteger.valueOf(0)));
+              TestUtils.createMockTransferFromAliceToBob(nonce++, BigInteger.valueOf(0)));
       Assert.assertTrue(isValid);
     }
 
@@ -126,8 +130,9 @@ public class LisztMultiOperatorTest {
     for (int i = 0; i < 3; i++) {
       boolean isValid =
           lisztManager1.addTransfer(
-              TestUtils.createMockXTransferFromAliceToBob(i, BigInteger.valueOf(5)));
+              TestUtils.createMockXTransferFromAliceToBob(nonce, BigInteger.valueOf(5)));
       Assert.assertTrue(isValid);
+      nonce++;
     }
   }
 }

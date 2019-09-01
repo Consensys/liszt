@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.consensys.liszt.accountmanager.Account;
+import net.consensys.liszt.accountmanager.RandomAccountStateProvider;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.PublicKey;
@@ -20,7 +21,7 @@ public class Controller {
 
   public Controller(short rollup0, short rollup1) {
 
-    manager = new LisztManagerImp(rollup0, rollup1);
+    manager = new LisztManagerImp(rollup0, rollup1, new RandomAccountStateProvider(rollup0));
     get(
         "/accounts/users/:owner",
         (req, res) -> {

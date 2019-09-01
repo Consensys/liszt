@@ -29,10 +29,10 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   private final short rollupId;
   private final short otherRollupId;
 
-  public LisztManagerImp(short rollupId, short otherRollupId) {
+  public LisztManagerImp(
+      short rollupId, short otherRollupId, AccountStateProvider accountsStateProvider) {
     this.rollupId = rollupId;
     this.otherRollupId = otherRollupId;
-    AccountStateProvider accountsStateProvider = new InMemoryAccountsStateProvider();
     Map<Hash, AccountsState> accountsState = accountsStateProvider.initialAccountsState();
     this.lastRootHash = accountsStateProvider.lastAcceptedRootHash();
     transferService = new TransferServiceImpl(accountsStateProvider.batchSize());
@@ -53,14 +53,12 @@ public class LisztManagerImp implements LisztManager, ProverListener {
 
   @Override
   public synchronized boolean addTransfer(RTransfer rtx) {
-
     if (!accountService.checkBasicValidity(rtx, this.lastRootHash)) {
       logger.info("Transaction is invalid");
       return false;
     }
 
     List<Account> lockedAccounts = accountService.getLockAccounts(this.lastRootHash);
-
     Optional<Account> lockedAccount =
         lockedAccounts.stream().filter(a -> a.publicKey.equals(rtx.from)).findAny();
 
@@ -81,7 +79,6 @@ public class LisztManagerImp implements LisztManager, ProverListener {
       if (transfers.isEmpty()) {
         return true;
       }
-
       invalidTransfers = accountService.updateIfAllTransfersValid(transfers, this.lastRootHash);
     } while (!invalidTransfers.isEmpty());
 
@@ -146,7 +143,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   }
 
   @Override
-  public List<Account> getAccounts() {
+  public synchronized List<Account> getAccounts() {
     return accountService.getAccounts(accountService.getLastAcceptedRootHash());
   }
 
@@ -164,10 +161,28 @@ public class LisztManagerImp implements LisztManager, ProverListener {
       TransferDone transferDone =
           blockchainService.getTransferDone(otherRollupId, hashOfThePendingTransfer);
 
-      boolean isInLockDone =
-          rtx.to.hash.asHex.equals(transferDone.from) && rtx.amount.equals(transferDone.amount);
+      boolean accountsOk = rtx.to.hash.asHex.equals(transferDone.from);
+      if (!accountsOk) {
+        logger.error(
+            "Receiver account "
+                + rtx.to.hash.asHex
+                + " should be equal transferDone from account "
+                + transferDone.from);
+      }
+      boolean balanceOk = rtx.amount.equals(transferDone.amount);
 
-      logger.info("Lock Done status for transfer: " + rtx.hash.asHex + " " + isInLockDone);
+      if (!balanceOk) {
+        logger.error(
+            "Transfer amount "
+                + rtx.amount
+                + " should be equal to locked amount"
+                + transferDone.amount);
+      }
+
+      boolean isInLockDone = accountsOk & balanceOk;
+
+      logger.info(
+          "Lock Done status for transfer: " + hashOfThePendingTransfer.asHex + " " + isInLockDone);
       return isInLockDone;
 
     } catch (Exception e) {
