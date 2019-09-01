@@ -79,7 +79,6 @@ public class LisztManagerImp implements LisztManager, ProverListener {
       if (transfers.isEmpty()) {
         return true;
       }
-
       invalidTransfers = accountService.updateIfAllTransfersValid(transfers, this.lastRootHash);
     } while (!invalidTransfers.isEmpty());
 
@@ -163,18 +162,27 @@ public class LisztManagerImp implements LisztManager, ProverListener {
           blockchainService.getTransferDone(otherRollupId, hashOfThePendingTransfer);
 
       boolean accountsOk = rtx.to.hash.asHex.equals(transferDone.from);
-      if (!accountsOk){
-        logger.error("Receiver account "+rtx.to.hash.asHex+" should be equal transferDone from account "+transferDone.from);
+      if (!accountsOk) {
+        logger.error(
+            "Receiver account "
+                + rtx.to.hash.asHex
+                + " should be equal transferDone from account "
+                + transferDone.from);
       }
-      boolean balanceOk =rtx.amount.equals(transferDone.amount);
+      boolean balanceOk = rtx.amount.equals(transferDone.amount);
 
-      if (!balanceOk){
-        logger.error("Transfer amount "+rtx.amount +" should be equal to locked amount"+transferDone.amount);
+      if (!balanceOk) {
+        logger.error(
+            "Transfer amount "
+                + rtx.amount
+                + " should be equal to locked amount"
+                + transferDone.amount);
       }
 
       boolean isInLockDone = accountsOk & balanceOk;
 
-      logger.info("Lock Done status for transfer: " + hashOfThePendingTransfer.asHex + " " + isInLockDone);
+      logger.info(
+          "Lock Done status for transfer: " + hashOfThePendingTransfer.asHex + " " + isInLockDone);
       return isInLockDone;
 
     } catch (Exception e) {

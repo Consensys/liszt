@@ -73,7 +73,7 @@ public class AccountServiceImp implements AccountService {
       this.lastAcceptedRootHash = newRootHash;
       accountRepository.saveNewAccountsState(newRootHash, tmpAccounts);
       lockedTransfers.addAll(tmpLockedTransfers);
-    }else{
+    } else {
       logger.error("Found invalid transfers, operation canceled");
     }
     return notAcceptedTransfers;
@@ -110,12 +110,11 @@ public class AccountServiceImp implements AccountService {
       return false;
     }
 
-
     Account newFromAcc = Accounts.updateAccountWithNonce(fromAcc, newFromAccBalance);
     tmpAccounts.put(newFromAcc.publicKey.hash, newFromAcc);
     Account toAcc = tmpAccounts.get(transfer.to.hash);
-    if (toAcc==null){
-      logger.error("Account "+transfer.to.hash.asHex+" does not exist");
+    if (toAcc == null) {
+      logger.error("Account " + transfer.to.hash.asHex + " does not exist");
       return false;
     }
     BigInteger newToAccBalance = toAcc.amount.add(transfer.amount);
@@ -133,7 +132,6 @@ public class AccountServiceImp implements AccountService {
             + transfer.amount);
     return true;
   }
-
 
   private boolean crossRollupTransfer(
       RTransfer transfer, AccountsState tmpAccounts, List<Hash> tmpLockedTransfers) {
@@ -158,11 +156,10 @@ public class AccountServiceImp implements AccountService {
     return true;
   }
 
-  private void invalidNonceLog(RTransfer transfer, Account fromAcc){
+  private void invalidNonceLog(RTransfer transfer, Account fromAcc) {
     logger.error("Transfer nonce should be bigger than account nonce");
     logger.error("Nonce for transfer " + transfer.hash.asHex + " is " + transfer.nonce);
     logger.error("Nonce for account " + fromAcc.publicKey.hash.asHex + " is " + fromAcc.nonce);
-
   }
 
   public List<Account> getLockAccounts(Hash rootHash) {
