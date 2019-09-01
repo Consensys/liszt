@@ -54,13 +54,14 @@ public class AccountServiceImp implements AccountService {
   @Override
   public List<RTransfer> updateIfAllTransfersValid(List<RTransfer> transfers, Hash fatherRootHash) {
     AccountsState tmpAccounts = accountRepository.cloneAccountsState(fatherRootHash);
+    List<Hash> tmpLockedTransfers = new ArrayList<>();
     List<RTransfer> notAcceptedTransfers = new ArrayList<>();
     for (RTransfer transfer : transfers) {
       boolean accepted;
       if (transfer.rIdFrom == transfer.rIdTo) {
         accepted = innerRollupTransfer(transfer, tmpAccounts);
       } else {
-        accepted = crossRollupTransfer(transfer, tmpAccounts);
+        accepted = crossRollupTransfer(transfer, tmpAccounts, tmpLockedTransfers);
       }
       if (!accepted) {
         notAcceptedTransfers.add(transfer);
@@ -71,6 +72,9 @@ public class AccountServiceImp implements AccountService {
       Hash newRootHash = Accounts.calculateNewRootHash(tmpAccounts);
       this.lastAcceptedRootHash = newRootHash;
       accountRepository.saveNewAccountsState(newRootHash, tmpAccounts);
+      lockedTransfers.addAll(tmpLockedTransfers);
+    }else{
+      logger.error("Found invalid transfers, operation canceled");
     }
     return notAcceptedTransfers;
   }
@@ -101,18 +105,23 @@ public class AccountServiceImp implements AccountService {
       return false;
     }
 
-    if (fromAcc.nonce>=transfer.nonce){
-      logger.error("Transfer nonce should be bigger than account nonce");
-      logger.error("Nonce for transfer "+transfer.hash+" is "+transfer.nonce);
-      logger.error("Nonce for account "+fromAcc.publicKey+" is "+fromAcc.nonce);
+    if (fromAcc.nonce >= transfer.nonce) {
+      invalidNonceLog(transfer, fromAcc);
       return false;
     }
-    Account toAcc = tmpAccounts.get(transfer.to.hash);
-    BigInteger newToAccBalance = toAcc.amount.add(transfer.amount);
-    Account newFromAcc = Accounts.updateAccount(fromAcc, newFromAccBalance);
-    Account newToAcc = Accounts.updateAccount(toAcc, newToAccBalance);
+
+
+    Account newFromAcc = Accounts.updateAccountWithNonce(fromAcc, newFromAccBalance);
     tmpAccounts.put(newFromAcc.publicKey.hash, newFromAcc);
+    Account toAcc = tmpAccounts.get(transfer.to.hash);
+    if (toAcc==null){
+      logger.error("Account "+transfer.to.hash.asHex+" does not exist");
+      return false;
+    }
+    BigInteger newToAccBalance = toAcc.amount.add(transfer.amount);
+    Account newToAcc = Accounts.updateAccount(toAcc, newToAccBalance);
     tmpAccounts.put(newToAcc.publicKey.hash, newToAcc);
+
     logger.info(
         "Accounts updated for transfer "
             + fromAcc.publicKey.hash.asHex.substring(0, 10)
@@ -125,21 +134,35 @@ public class AccountServiceImp implements AccountService {
     return true;
   }
 
-  private boolean crossRollupTransfer(RTransfer transfer, AccountsState tmpAccounts) {
+
+  private boolean crossRollupTransfer(
+      RTransfer transfer, AccountsState tmpAccounts, List<Hash> tmpLockedTransfers) {
+
     Account fromAcc = tmpAccounts.get(transfer.from.hash);
     BigInteger newFromAccBalance = fromAcc.amount.subtract(transfer.amount);
     if (newFromAccBalance.compareTo(BigInteger.ZERO) == -1) {
       return false;
     }
-    Account newFromAcc = Accounts.updateAccount(fromAcc, newFromAccBalance);
+    if (fromAcc.nonce >= transfer.nonce) {
+      invalidNonceLog(transfer, fromAcc);
+      return false;
+    }
+    Account newFromAcc = Accounts.updateAccountWithNonce(fromAcc, newFromAccBalance);
     Account lockedAcc =
         Accounts.createLockAccount(new PublicKey(transfer.hash), 0, transfer.amount, 0);
     tmpAccounts.put(newFromAcc.publicKey.hash, newFromAcc);
     tmpAccounts.put(transfer.hash, lockedAcc);
-    lockedTransfers.add(transfer.hash);
+    tmpLockedTransfers.add(transfer.hash);
     logger.info(
         "X rollup transfer locked " + lockedAcc.publicKey.hash.asHex.substring(0, 10) + "...");
     return true;
+  }
+
+  private void invalidNonceLog(RTransfer transfer, Account fromAcc){
+    logger.error("Transfer nonce should be bigger than account nonce");
+    logger.error("Nonce for transfer " + transfer.hash.asHex + " is " + transfer.nonce);
+    logger.error("Nonce for account " + fromAcc.publicKey.hash.asHex + " is " + fromAcc.nonce);
+
   }
 
   public List<Account> getLockAccounts(Hash rootHash) {

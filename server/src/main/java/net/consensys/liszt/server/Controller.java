@@ -53,8 +53,6 @@ public class Controller {
     post(
         "/transfers",
         (request, response) -> {
-          //  System.out.println("Transfer");
-          // System.out.println(request.body());
           response.type("application/json");
 
           Transfer transfer = new Gson().fromJson(request.body(), Transfer.class);

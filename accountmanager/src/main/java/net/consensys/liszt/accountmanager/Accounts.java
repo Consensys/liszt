@@ -30,6 +30,10 @@ public class Accounts {
   }
 
   protected static Account updateAccount(Account account, BigInteger amount) {
+    return createAccount(account.publicKey, account.id, amount, account.nonce );
+  }
+
+  protected static Account updateAccountWithNonce(Account account, BigInteger amount) {
     return createAccount(account.publicKey, account.id, amount, account.nonce + 1);
   }
 
