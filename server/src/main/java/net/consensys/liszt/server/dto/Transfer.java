@@ -12,6 +12,5 @@ public class Transfer {
   public String hashOfThePendingTransfer;
   public int timeout;
 
-
   public Transfer() {}
 }

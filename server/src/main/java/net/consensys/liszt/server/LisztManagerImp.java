@@ -154,7 +154,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   }
 
   @Override
-  public synchronized int proofId()  {
+  public synchronized int proofId() {
     return proofId;
   }
 
