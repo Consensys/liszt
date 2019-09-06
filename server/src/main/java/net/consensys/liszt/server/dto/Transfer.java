@@ -10,6 +10,8 @@ public class Transfer {
   public short rIdFrom;
   public short rIdTo;
   public String hashOfThePendingTransfer;
+  public int timeout;
+
 
   public Transfer() {}
 }

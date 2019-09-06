@@ -7,7 +7,12 @@
       </template>
 
        <template slot="[owner]" slot-scope="data">
-           {{data.item.publicKey | truncate(15)}}
+         <b-row class="mb-2">
+
+          <b-col> {{data.item.publicKey | truncate(15)}} </b-col>
+          <b-col> <b-button size="sm" @click="$emit('load:data', data.index)" class="mr-2"> copy address </b-button> </b-col>
+        </b-row>
+
        </template>
 
       <template slot="[show_details]" slot-scope="data">
@@ -30,11 +35,6 @@
         </b-card>
       </template>
 
-      <template slot="[load]"  slot-scope="data">
-        <b-button size="sm" @click="$emit('load:data', data.index)" class="mr-2">
-           Load
-        </b-button>
-      </template>
 
     </b-table>
   </div>

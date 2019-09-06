@@ -28,6 +28,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   private Hash lastRootHash;
   private final short rollupId;
   private final short otherRollupId;
+  private int proofId;
 
   public LisztManagerImp(
       short rollupId, short otherRollupId, AccountStateProvider accountsStateProvider) {
@@ -150,6 +151,11 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   @Override
   public synchronized long getLockDoneTimeout(Hash txHash) throws Exception {
     return blockchainService.getLockedDone(rollupId, txHash);
+  }
+
+  @Override
+  public synchronized int proofId()  {
+    return proofId;
   }
 
   private boolean canBeUnlocked(RTransfer rtx) {

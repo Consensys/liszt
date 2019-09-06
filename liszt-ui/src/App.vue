@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="small-container">
     <h3>Transfer</h3>
-    <transfer-form @add:transfer="addTransfer" v-bind:transfer="transfer"/>
+    <transfer-form @add:transfer="addTransfer" v-bind:transfer="transfer" v-bind:rIdName="rIdName"/>
 
     <h3>Accounts</h3>
     <account-table @load:data="loadData" v-bind:accounts="accounts" v-bind:fields="fields"/>
@@ -15,6 +15,14 @@ import AccountTable from '@/components/AccountTable.vue'
 const PORT = process.env.VUE_APP_API_PORT
 const ROLLUP_ID = process.env.VUE_APP_ROLLUP_ID
 
+function rollupName(id) {
+   if (id ==0){
+        return 'Rollup A';
+   }else{
+        return 'Rollup B'
+   }
+}
+
 export default {
   name: 'app',
   components: {
@@ -24,7 +32,8 @@ export default {
 
   data() {
     return {
-      fields: ['index','owner','isTmp' ,'balance', 'show_details', 'load'],
+      fields: ['index','owner','isTmp' ,'balance', 'show_details'],
+      rIdName: rollupName(ROLLUP_ID),
       accounts: [],
       transfer:  {
         from: '',
@@ -54,6 +63,8 @@ export default {
     },
 
     async addTransfer(transfer) {
+            console.error(transfer)
+
       try {
         const response = await fetch('http://localhost:'+PORT+'/transfers', {
           method: 'POST',
@@ -72,12 +83,10 @@ export default {
         this.transfer.to= ''
         this.transfer.rIdTo=''
         this.transfer.amount=''
-        this.transfer.nonce=''
         this.transfer.hashOfThePendingTransfer=''
 
         this.transfer.from = this.accounts[index].publicKey
         this.transfer.nonce = this.accounts[index].nonce+1
-
     },
   },
 }
