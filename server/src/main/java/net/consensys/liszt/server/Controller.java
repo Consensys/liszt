@@ -54,7 +54,6 @@ public class Controller {
         "/transfers",
         (request, response) -> {
           response.type("application/json");
-
           Transfer transfer = new Gson().fromJson(request.body(), Transfer.class);
           // PublicKey from = new PublicKey(transfer.from);
           // Optional<String> hashOfThePendingTransfer = Optional.empty();

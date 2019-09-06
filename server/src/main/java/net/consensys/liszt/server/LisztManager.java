@@ -60,4 +60,6 @@ public interface LisztManager {
   long getLockDoneTimeout(Hash txHash) throws Exception;
 
   List<Account> getAccounts();
+
+  int proofId();
 }
