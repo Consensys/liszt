@@ -1,5 +1,6 @@
 package net.consensys.liszt.blockchainmanager;
 
+import java.math.BigInteger;
 import java.util.Optional;
 import net.consensys.liszt.blockchainmanager.contract.Liszt;
 import net.consensys.liszt.blockchainmanager.contract.LisztContract;
@@ -16,11 +17,12 @@ public class BlockchainServiceImp implements BlockchainService {
 
   private Liszt liszt;
   private static final Logger logger = LogManager.getLogger("Liszt");
+  private Deployer deployer;
 
   @Override
   public void startLocalNode() throws Exception {
     Controller controller = new GanacheController(10, 100);
-    Deployer deployer = new LisztDeployer(controller.provider());
+    this.deployer = new LisztDeployer(controller.provider());
 
     if (!controller.isLocalNodeStarted()) {
       controller.start();
@@ -69,5 +71,10 @@ public class BlockchainServiceImp implements BlockchainService {
   @Override
   public TransferDone getTransferDone(short rollupId, Hash hash) throws Exception {
     return liszt.transferDone(rollupId, hash);
+  }
+
+  @Override
+  public BigInteger getBlockHeight() {
+    return deployer.getBlockHeight();
   }
 }

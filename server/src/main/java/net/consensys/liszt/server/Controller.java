@@ -13,6 +13,7 @@ import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.core.crypto.Signature;
 import net.consensys.liszt.server.dto.AcccountInfo;
+import net.consensys.liszt.server.dto.NodeInfo;
 import net.consensys.liszt.server.dto.Transfer;
 
 public class Controller {
@@ -22,19 +23,6 @@ public class Controller {
   public Controller(short rollup0, short rollup1) {
 
     manager = new LisztManagerImp(rollup0, rollup1, new RandomAccountStateProvider(rollup0));
-    get(
-        "/accounts/users/:owner",
-        (req, res) -> {
-          Account rollupAccount = manager.getAccount(new PublicKey(req.params(":owner")));
-          return new Gson()
-              .toJson(
-                  new AcccountInfo(
-                      rollupAccount.publicKey.owner,
-                      rollupAccount.amount,
-                      rollupAccount.nonce,
-                      rollupAccount.isLock,
-                      rollupAccount.publicKey.hash.asHex));
-        });
 
     get(
         "/accounts",
@@ -50,19 +38,18 @@ public class Controller {
           return new Gson().toJson(accs);
         });
 
+    get(
+        "/info",
+        (req, res) -> {
+          NodeInfo nodeInfo = manager.getNodeInfo();
+          return new Gson().toJson(nodeInfo);
+        });
+
     post(
         "/transfers",
         (request, response) -> {
           response.type("application/json");
           Transfer transfer = new Gson().fromJson(request.body(), Transfer.class);
-          // PublicKey from = new PublicKey(transfer.from);
-          // Optional<String> hashOfThePendingTransfer = Optional.empty();
-          // if (transfer.hashOfThePendingTransfer != null) {
-          // hashOfThePendingTransfer = Optional.of(transfer.hashOfThePendingTransfer);
-          // if (transfer.hashOfThePendingTransfer.equals(transfer.from)) {
-          //  PublicKey from = new PublicKey(new Hash(transfer.from));
-          // }
-          // }
 
           PublicKey from = new PublicKey(new Hash(transfer.from));
           Optional<String> hashOfThePendingTransfer = Optional.empty();

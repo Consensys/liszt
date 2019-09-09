@@ -1,5 +1,6 @@
 package net.consensys.liszt.blockchainmanager;
 
+import java.math.BigInteger;
 import net.consensys.liszt.blockchainmanager.contract.TransferDone;
 import net.consensys.liszt.core.common.Batch;
 import net.consensys.liszt.core.crypto.Hash;
@@ -37,4 +38,7 @@ public interface BlockchainService {
    * @throws Exception
    */
   TransferDone getTransferDone(short rollupId, Hash hash) throws Exception;
+
+  /** @return current block height */
+  BigInteger getBlockHeight();
 }

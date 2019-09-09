@@ -12,9 +12,11 @@
  */
 package net.consensys.liszt.blockchainmanager;
 
+import java.math.BigInteger;
 import net.consensys.liszt.blockchainmanager.contract.LisztContract;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -52,5 +54,21 @@ public class LisztDeployer implements Deployer {
 
     LisztContract lisztContract = LisztContract.load(addr, web3j, credentials, contractGasProvider);
     return lisztContract;
+  }
+
+  public BigInteger getBlockHeight() {
+    BigInteger blockNumber = BigInteger.ZERO;
+    try {
+      blockNumber =
+          web3j
+              .ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false)
+              .send()
+              .getBlock()
+              .getNumber();
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
+    return blockNumber;
   }
 }

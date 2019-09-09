@@ -1,5 +1,6 @@
 package net.consensys.liszt.server;
 
+import java.math.BigInteger;
 import java.util.*;
 import net.consensys.liszt.accountmanager.*;
 import net.consensys.liszt.blockchainmanager.*;
@@ -12,6 +13,7 @@ import net.consensys.liszt.core.crypto.PublicKey;
 import net.consensys.liszt.provermanager.ProverListener;
 import net.consensys.liszt.provermanager.ProverService;
 import net.consensys.liszt.provermanager.ProverServiceImp;
+import net.consensys.liszt.server.dto.NodeInfo;
 import net.consensys.liszt.transfermanager.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -154,8 +156,9 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   }
 
   @Override
-  public synchronized int proofId() {
-    return proofId;
+  public NodeInfo getNodeInfo() {
+    BigInteger blockHeight = blockchainService.getBlockHeight();
+    return new NodeInfo(blockHeight);
   }
 
   private boolean canBeUnlocked(RTransfer rtx) {
