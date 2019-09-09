@@ -7,6 +7,7 @@ import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
 import net.consensys.liszt.core.crypto.PublicKey;
+import net.consensys.liszt.server.dto.NodeInfo;
 import net.consensys.liszt.transfermanager.RTransferState;
 
 public interface LisztManager {
@@ -61,5 +62,5 @@ public interface LisztManager {
 
   List<Account> getAccounts();
 
-  int proofId();
+  NodeInfo getNodeInfo();
 }

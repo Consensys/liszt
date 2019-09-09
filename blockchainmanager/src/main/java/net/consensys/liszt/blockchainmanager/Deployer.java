@@ -12,10 +12,13 @@
  */
 package net.consensys.liszt.blockchainmanager;
 
+import java.math.BigInteger;
 import net.consensys.liszt.blockchainmanager.contract.LisztContract;
 
 public interface Deployer {
   LisztContract deploySmartContract(String privateKey);
 
   LisztContract loadSmartContract(String privateKey, String addr);
+
+  BigInteger getBlockHeight();
 }
