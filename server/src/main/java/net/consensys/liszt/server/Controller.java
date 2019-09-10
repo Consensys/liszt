@@ -53,7 +53,7 @@ public class Controller {
 
           PublicKey from = new PublicKey(new Hash(transfer.from));
           Optional<String> hashOfThePendingTransfer = Optional.empty();
-          if (transfer.hashOfThePendingTransfer != null) {
+          if (!transfer.hashOfThePendingTransfer.equals("")) {
             hashOfThePendingTransfer = Optional.of(transfer.hashOfThePendingTransfer);
           }
 

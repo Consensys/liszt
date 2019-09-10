@@ -103,7 +103,6 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   @Override
   public synchronized void onNewProof(Proof proof) {
     logger.info("New proof generated ");
-
     Batch batch = batchService.getBatch(proof.rootHash);
     try {
       blockchainService.submit(batch, proof);
@@ -165,12 +164,13 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     if (!rtx.hashOfThePendingTransfer.isPresent()) {
       return false;
     }
+
     Hash hashOfThePendingTransfer = new Hash(rtx.hashOfThePendingTransfer.get());
     try {
       TransferDone transferDone =
           blockchainService.getTransferDone(otherRollupId, hashOfThePendingTransfer);
 
-      boolean accountsOk = rtx.to.hash.asHex.equals(transferDone.from);
+      boolean accountsOk = new PublicKey(rtx.to.hash).equals(transferDone.from);
       if (!accountsOk) {
         logger.error(
             "Receiver account "
@@ -188,11 +188,14 @@ public class LisztManagerImp implements LisztManager, ProverListener {
                 + transferDone.amount);
       }
 
-      boolean isInLockDone = accountsOk & balanceOk;
+      boolean isInTransferDone = accountsOk & balanceOk;
 
       logger.info(
-          "Lock Done status for transfer: " + hashOfThePendingTransfer.asHex + " " + isInLockDone);
-      return isInLockDone;
+          "Transfer Done status for transfer: "
+              + hashOfThePendingTransfer.asHex
+              + " "
+              + isInTransferDone);
+      return isInTransferDone;
 
     } catch (Exception e) {
       e.printStackTrace();

@@ -5,10 +5,10 @@ import java.util.Arrays;
 
 public class Hash {
 
-  protected final byte[] hash;
+  public final byte[] hash;
   public final String asHex;
 
-  protected Hash(byte[] hash) {
+  public Hash(byte[] hash) {
     this.hash = hash;
     asHex = BaseEncoding.base16().encode(hash);
   }

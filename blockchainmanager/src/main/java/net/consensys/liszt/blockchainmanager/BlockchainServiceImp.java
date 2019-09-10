@@ -1,6 +1,8 @@
 package net.consensys.liszt.blockchainmanager;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import net.consensys.liszt.blockchainmanager.contract.Liszt;
 import net.consensys.liszt.blockchainmanager.contract.LisztContract;
@@ -50,17 +52,19 @@ public class BlockchainServiceImp implements BlockchainService {
 
   @Override
   public void submit(Batch batch, Proof proof) throws Exception {
+    List<RTransfer> lockDoneList = new ArrayList<>();
+    List<RTransfer> transferDoneList = new ArrayList<>();
     for (RTransfer t : batch.transfers) {
       if (t.rIdFrom != t.rIdTo) {
-        liszt.updateLockDone(t);
+        lockDoneList.add(t);
       }
 
       if (!t.hashOfThePendingTransfer.equals(Optional.empty())) {
-        // TODO add check if transfer is not in transfer done before adding it (also in smart
-        // contract)
-        liszt.updateTransferDone(t);
+        transferDoneList.add(t);
       }
     }
+    liszt.updateLockDone(lockDoneList);
+    liszt.updateTransferDone(transferDoneList);
   }
 
   @Override
