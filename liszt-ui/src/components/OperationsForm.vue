@@ -9,8 +9,8 @@
         </b-col cols>
 
         <b-col cols>
-            <b-form-group label="Proof id">
-            <b-form-input :disabled="true"  placeholder="0"/>
+            <b-form-group label="Last root hash">
+            <b-form-input v-model="nodeInfo.lastRootHash" :disabled="true"  placeholder="0"/>
             </b-form-group>
             </b-col cols>
       </b-form-row>

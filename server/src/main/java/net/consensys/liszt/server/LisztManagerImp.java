@@ -42,7 +42,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     accountService =
         new AccountServiceImp(
             new AccountRepositoryImp(accountsState), accountsStateProvider.lastAcceptedRootHash());
-    batchService = new BatchServiceImpl();
+    batchService = new BatchServiceImpl(rollupId);
     proveService = new ProverServiceImp();
     blockchainService = new BlockchainServiceImp();
     try {
@@ -103,7 +103,6 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   @Override
   public synchronized void onNewProof(Proof proof) {
     logger.info("New proof generated ");
-
     Batch batch = batchService.getBatch(proof.rootHash);
     try {
       blockchainService.submit(batch, proof);
@@ -158,25 +157,27 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   @Override
   public NodeInfo getNodeInfo() {
     BigInteger blockHeight = blockchainService.getBlockHeight();
-    return new NodeInfo(blockHeight);
+    return new NodeInfo(blockHeight, lastRootHash.asHex);
   }
 
   private boolean canBeUnlocked(RTransfer rtx) {
     if (!rtx.hashOfThePendingTransfer.isPresent()) {
+      logger.error("Pending Transfer is empty");
       return false;
     }
+
     Hash hashOfThePendingTransfer = new Hash(rtx.hashOfThePendingTransfer.get());
     try {
       TransferDone transferDone =
           blockchainService.getTransferDone(otherRollupId, hashOfThePendingTransfer);
 
-      boolean accountsOk = rtx.to.hash.asHex.equals(transferDone.from);
+      boolean accountsOk = new PublicKey(rtx.to.hash).equals(transferDone.from);
       if (!accountsOk) {
         logger.error(
             "Receiver account "
                 + rtx.to.hash.asHex
-                + " should be equal transferDone from account "
-                + transferDone.from);
+                + " should be equal transferDone account "
+                + transferDone.from.hash.asHex);
       }
       boolean balanceOk = rtx.amount.equals(transferDone.amount);
 
@@ -188,11 +189,14 @@ public class LisztManagerImp implements LisztManager, ProverListener {
                 + transferDone.amount);
       }
 
-      boolean isInLockDone = accountsOk & balanceOk;
+      boolean isInTransferDone = accountsOk & balanceOk;
 
       logger.info(
-          "Lock Done status for transfer: " + hashOfThePendingTransfer.asHex + " " + isInLockDone);
-      return isInLockDone;
+          "Transfer Done status for transfer: "
+              + hashOfThePendingTransfer.asHex
+              + " "
+              + isInTransferDone);
+      return isInTransferDone;
 
     } catch (Exception e) {
       e.printStackTrace();
