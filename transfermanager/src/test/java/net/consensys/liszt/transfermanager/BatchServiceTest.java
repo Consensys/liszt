@@ -18,7 +18,7 @@ public class BatchServiceTest {
 
   @Before
   public void setUp() {
-    batchService = new BatchServiceImpl();
+    batchService = new BatchServiceImpl((short) 0);
     Hash previousRootHash = HashUtil.hash("0");
     rootHash = HashUtil.hash("1");
     transfers = new ArrayList<>();

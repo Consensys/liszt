@@ -1,15 +1,11 @@
 package net.consensys.liszt.blockchainmanager;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import net.consensys.liszt.blockchainmanager.contract.Liszt;
 import net.consensys.liszt.blockchainmanager.contract.LisztContract;
 import net.consensys.liszt.blockchainmanager.contract.TransferDone;
 import net.consensys.liszt.blockchainmanager.ganache.GanacheController;
 import net.consensys.liszt.core.common.Batch;
-import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
 import net.consensys.liszt.core.crypto.Proof;
 import org.apache.log4j.LogManager;
@@ -52,20 +48,8 @@ public class BlockchainServiceImp implements BlockchainService {
 
   @Override
   public void submit(Batch batch, Proof proof) throws Exception {
-    List<RTransfer> lockDoneList = new ArrayList<>();
-    List<RTransfer> transferDoneList = new ArrayList<>();
-    for (RTransfer t : batch.transfers) {
-      if (t.rIdFrom != t.rIdTo) {
-        lockDoneList.add(t);
-      }
-
-      if (!t.hashOfThePendingTransfer.equals(Optional.empty())) {
-        transferDoneList.add(t);
-      }
-    }
-    liszt.updateLockDone(lockDoneList);
-    liszt.updateTransferDone(transferDoneList);
-  }
+    liszt.update(batch.transfers, batch.rollupId, batch.rootHash, null);
+   }
 
   @Override
   public long getLockedDone(int rollupId, Hash txHash) throws Exception {

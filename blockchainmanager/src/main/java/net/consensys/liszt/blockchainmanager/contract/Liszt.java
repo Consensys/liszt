@@ -3,8 +3,10 @@ package net.consensys.liszt.blockchainmanager.contract;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import net.consensys.liszt.core.common.RTransfer;
 import net.consensys.liszt.core.crypto.Hash;
+import net.consensys.liszt.core.crypto.Proof;
 import org.web3j.tuples.generated.Tuple4;
 
 public class Liszt {
@@ -13,26 +15,6 @@ public class Liszt {
 
   public Liszt(LisztContract lisztContract) {
     this.lisztContract = lisztContract;
-  }
-
-  public void updateLockDone(List<RTransfer> transfers) throws Exception {
-    List<BigInteger> sourceRollupList = new ArrayList<>();
-    List<BigInteger> targetRollupList = new ArrayList<>();
-    List<BigInteger> timeoutList = new ArrayList<>();
-    List<byte[]> hashList = new ArrayList<>();
-
-    for (RTransfer t : transfers) {
-      sourceRollupList.add(BigInteger.valueOf(t.rIdFrom));
-      targetRollupList.add(BigInteger.valueOf(t.rIdTo));
-      timeoutList.add(BigInteger.valueOf(t.timeout));
-      hashList.add(t.hash.hash);
-    }
-
-    if (!sourceRollupList.isEmpty()) {
-      lisztContract
-          .updateLockDone(sourceRollupList, targetRollupList, timeoutList, hashList)
-          .send();
-    }
   }
 
   public long lockDoneTimeout(int rollupId, Hash txHash) throws Exception {
@@ -45,23 +27,45 @@ public class Liszt {
     return lisztContract.getContractAddress();
   }
 
-  public void updateTransferDone(List<RTransfer> transfers) throws Exception {
-    List<BigInteger> rollupIdList = new ArrayList<>();
+  public void update(List<RTransfer> transfers, short rollupId, Hash lastRootHash, Proof proof)
+      throws Exception {
     List<byte[]> fromList = new ArrayList<>();
     List<byte[]> toList = new ArrayList<>();
     List<BigInteger> amountList = new ArrayList<>();
+    List<BigInteger> targetRollupList = new ArrayList<>();
     List<byte[]> hashList = new ArrayList<>();
+    List<BigInteger> timeoutList = new ArrayList<>();
+    List<byte[]> pendingTransferHashList = new ArrayList<>();
 
     for (RTransfer t : transfers) {
-      rollupIdList.add(BigInteger.valueOf(t.rIdFrom));
       fromList.add(t.from.hash.hash);
       toList.add(t.to.hash.hash);
       amountList.add(t.amount);
-      hashList.add(new Hash(t.hashOfThePendingTransfer.get()).hash);
+      targetRollupList.add(BigInteger.valueOf(t.rIdTo));
+      hashList.add(t.hash.hash);
+      timeoutList.add(BigInteger.valueOf(t.timeout));
+      Optional<String> pendingTransferHash = t.hashOfThePendingTransfer;
+
+      if (pendingTransferHash.equals(Optional.empty())) {
+        byte[] bytes = new byte[32];
+        pendingTransferHashList.add(bytes);
+      } else {
+        pendingTransferHashList.add(new Hash(pendingTransferHash.get()).hash);
+      }
     }
-    if (!rollupIdList.isEmpty()) {
-      lisztContract.updateTransferDone(rollupIdList, fromList, toList, amountList, hashList).send();
-    }
+
+    lisztContract
+        .update(
+            fromList,
+            toList,
+            amountList,
+            targetRollupList,
+            hashList,
+            timeoutList,
+            pendingTransferHashList,
+            BigInteger.valueOf(rollupId),
+            lastRootHash.hash)
+        .send();
   }
 
   public TransferDone transferDone(short rollupId, Hash hash) throws Exception {

@@ -42,7 +42,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
     accountService =
         new AccountServiceImp(
             new AccountRepositoryImp(accountsState), accountsStateProvider.lastAcceptedRootHash());
-    batchService = new BatchServiceImpl();
+    batchService = new BatchServiceImpl(rollupId);
     proveService = new ProverServiceImp();
     blockchainService = new BlockchainServiceImp();
     try {
@@ -162,6 +162,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
 
   private boolean canBeUnlocked(RTransfer rtx) {
     if (!rtx.hashOfThePendingTransfer.isPresent()) {
+      logger.error("Pending Transfer is empty");
       return false;
     }
 
@@ -175,8 +176,8 @@ public class LisztManagerImp implements LisztManager, ProverListener {
         logger.error(
             "Receiver account "
                 + rtx.to.hash.asHex
-                + " should be equal transferDone from account "
-                + transferDone.from);
+                + " should be equal transferDone account "
+                + transferDone.from.hash.asHex);
       }
       boolean balanceOk = rtx.amount.equals(transferDone.amount);
 

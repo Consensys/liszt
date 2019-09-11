@@ -9,16 +9,18 @@ public class BatchServiceImpl implements BatchService {
   private final Map<Hash, Batch> batches;
   private final Map<Hash, List<BatchStatus>> batchStatusesForTransfer;
   private final Queue<Batch> batchesToProve;
+  private final short rollupId;
 
-  public BatchServiceImpl() {
+  public BatchServiceImpl(short rollupId) {
     batches = new HashMap<>();
     batchStatusesForTransfer = new HashMap<>();
     batchesToProve = new LinkedList<>();
+    this.rollupId = rollupId;
   }
 
   @Override
   public BatchStatus startNewBatch(Hash fatherRootHash, Hash rootHash, List<RTransfer> transfers) {
-    Batch batch = new Batch(fatherRootHash, rootHash, transfers);
+    Batch batch = new Batch(fatherRootHash, rootHash, transfers, this.rollupId);
     batches.put(rootHash, batch);
     batchesToProve.add(batch);
 
