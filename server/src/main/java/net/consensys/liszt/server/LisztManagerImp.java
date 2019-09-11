@@ -157,7 +157,7 @@ public class LisztManagerImp implements LisztManager, ProverListener {
   @Override
   public NodeInfo getNodeInfo() {
     BigInteger blockHeight = blockchainService.getBlockHeight();
-    return new NodeInfo(blockHeight);
+    return new NodeInfo(blockHeight, lastRootHash.asHex);
   }
 
   private boolean canBeUnlocked(RTransfer rtx) {
