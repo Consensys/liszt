@@ -9,10 +9,6 @@
             <account-table @load:data="loadData" v-bind:accounts="accounts" v-bind:fields="fields"/>
           </b-tab>
 
-          <b-tab title="Operation">
-           <operations-form v-bind:nodeInfo="nodeInfo"/>
-          </b-tab>
-
     </b-tabs>
    </b-card>
 
@@ -22,7 +18,6 @@
 <script>
 import TransferForm from '@/components/TransferForm.vue'
 import AccountTable from '@/components/AccountTable.vue'
-import OperationsForm from '@/components/OperationsForm.vue'
 
 const PORT = process.env.VUE_APP_API_PORT
 const ROLLUP_ID = process.env.VUE_APP_ROLLUP_ID
@@ -40,7 +35,6 @@ export default {
   components: {
     TransferForm,
     AccountTable,
-    OperationsForm
   },
 
   data() {
