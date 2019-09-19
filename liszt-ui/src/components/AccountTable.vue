@@ -20,7 +20,7 @@
         </b-button>
       </template>
 
-      <template v-slot:cell(row-details)="data">
+      <template v-slot:row-details="data">
         <b-card>
           <b-row class="mb-2">
             <b-col sm="3" class="text-sm-right"><b>Nonce:</b></b-col>
@@ -47,4 +47,4 @@
       accounts: Array,
     },
   }
-</script>
+</script>s
