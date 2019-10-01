@@ -11,13 +11,31 @@ Liszt is a version of zk-rollup (layer 2 scaling sloution for ethereum) which wi
 
 More information can be found here: https://hackmd.io/gmZ_SkryRDOF7JeG6_rpTw?view
 
+You need to install Ganache, for linux use:
+```
+sudo npm install -g ganache-cli
+
+```
+Then you can build by cloning this repository
+
 ### Building:
 - ```git clone https://github.com/ConsenSys/liszt```
+- ```cd liszt```
 - ```gradle test```
 - ```gradle shadowJar``` 
 
+To run open the console and launch the server with the following command:
+
 ### Running REST server:
-- ```java --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -Xms6000m -Xmx12048m -classpath server/build/libs/liszt-ws.jar net.consensys.liszt.server.Start```
+- ```java  -Xms6000m -Xmx12048m -classpath server/build/libs/liszt-ws.jar net.consensys.liszt.server.Start 0 1 4567```
+
+To have the UI run:
+### UI
+``` cd lisz/lisz-ui
+    yarn install
+    yarn run serve
+```
+You should be able to go to http://localhost:8080/ and start doing transfers
 
 ### Architecture:
 <img width="760" alt="Screenshot 2019-07-25 at 13 16 49" src="https://user-images.githubusercontent.com/7760067/61870546-a96d5c00-aede-11e9-8858-6db6590187ef.png">
